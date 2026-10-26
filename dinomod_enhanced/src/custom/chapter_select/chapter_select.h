@@ -53,11 +53,13 @@ Chapter* chselect_get_chapters(s32* count);
 void chselect_set_player(s32 playerno);
 void chselect_set_location(s32 playerno, f32 x, f32 y, f32 z, s16 yaw, s32 layer);
 void chselect_set_music(s32 playerno, s32 ambience1, s32 ambience2, s32 music1, s32 music2);
-void chselect_set_light_actions(s32 playerno, PlayerLightActions* actions);
-void chselect_set_env_actions(s32 playerno, PlayerEnvActions* actions);
+void chselect_set_light(s32 playerno, PlayerLightActions* actions);
+void chselect_set_env(s32 playerno, PlayerEnvActions* actions);
 
 void chselect_set_map_state(s32 mapID, s32 act, enum ObjGroupStatusBits groupBits);
 void chselect_move_setup(s32 uid, s32 mapID, f32 x, f32 y, f32 z);
+/** in timesave units, not ticks */
+void chselect_set_timesave(s32 uid, f32 time);
 
 void chselect_set_min_magic(s32 playerno, s32 magic);
 void chselect_set_min_scarabs(s32 playerno, s32 scarabs);

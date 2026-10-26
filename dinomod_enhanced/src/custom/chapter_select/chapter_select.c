@@ -17,7 +17,6 @@
 #include "macros.h"
 
 static s32 windowOpen = FALSE;
-static s32 selectedChapter = 0;
 static s32 queuedChapterSelect = -1;
 
 static GameState* get_gplay_state(void);
@@ -50,13 +49,13 @@ void chselect_set_music(s32 playerno, s32 ambience1, s32 ambience2, s32 music1, 
     actions->actionNums[3] = music2;
 }
 
-void chselect_set_light_actions(s32 playerno, PlayerLightActions* actions) {
+void chselect_set_light(s32 playerno, PlayerLightActions* actions) {
     GameState* state = get_gplay_state();
     PlayerLightActions* dst = &state->save.map.lightActions[playerno];
     bcopy(actions, dst, sizeof(PlayerLightActions));
 }
 
-void chselect_set_env_actions(s32 playerno, PlayerEnvActions* actions) {
+void chselect_set_env(s32 playerno, PlayerEnvActions* actions) {
     GameState* state = get_gplay_state();
     PlayerEnvActions* dst = &state->save.map.envActions[playerno];
     bcopy(actions, dst, sizeof(PlayerEnvActions));
@@ -73,6 +72,10 @@ void chselect_move_setup(s32 uid, s32 mapID, f32 x, f32 y, f32 z) {
     mapSaveObject(&setup, mapID, x, y, z);
 }
 
+void chselect_set_timesave(s32 uid, f32 time) {
+    gDLL_29_Gplay->vtbl->add_time(uid, time);
+}
+
 void chselect_set_min_magic(s32 playerno, s32 magic) {
     GameState* state = get_gplay_state();
     PlayerStats* playerStats = &state->save.file.players[playerno];
@@ -85,6 +88,12 @@ void chselect_set_min_scarabs(s32 playerno, s32 scarabs) {
     PlayerStats* playerStats = &state->save.file.players[playerno];
     playerStats->scarabs = MAX(playerStats->scarabs, scarabs);
     playerStats->scarabsLargestRecent = playerStats->scarabs;
+
+    if (playerno == PLAYER_KRYSTAL) {
+        mainSetBits(BIT_Scarab_Count_Krystal, playerStats->scarabs);
+    } else {
+        mainSetBits(BIT_Scarab_Count_Sabre, playerStats->scarabs);
+    }
 }
 
 // pretty much the same as gplay_init_save
@@ -154,7 +163,10 @@ static void goto_chapter(s32 index) {
     Chapter* chapters = chselect_get_chapters(&numChapters);
 
     for (s32 i = 0; i <= index && i < numChapters; i++) {
-        chapters[i].callback();
+        Chapter* chapter = &chapters[i];
+        if (chapter->callback != NULL) {
+            chapter->callback();
+        }
     }
 
     reload_from_gplay_state();
@@ -167,20 +179,37 @@ void dinomod_dbgui_chapter_select_menu(void) {
 RECOMP_CALLBACK(".", dinomod_dbgui_event) void chapter_select_dinomod_dbgui_callback(void) {
     if (windowOpen) {
         if (dbgui_begin("Chapter Select", &windowOpen)) {
+            s32 currMenu = menuGetCurrent();
+            _Bool disabled = currMenu >= MENU_POST && currMenu <= MENU_OPTIONS;
+            
             s32 numChapters;
             Chapter* chapters = chselect_get_chapters(&numChapters);
 
-            if (dbgui_begin_combo("Chapter", chapters[selectedChapter].name)) {
+            if (dbgui_begin_child("scroll")) {
                 for (s32 i = 0; i < numChapters; i++) {
-                    if (dbgui_selectable(recomp_sprintf_helper("[%d] %s", i + 1, chapters[i].name), i == selectedChapter)) {
-                        selectedChapter = i;
+                    dbgui_push_str_id(recomp_sprintf_helper("ch%d", i));
+
+                    Chapter* chapter = &chapters[i];
+                    if (chapter->callback == NULL) {
+                        dbgui_separator_text(chapter->name);
+                    } else {
+                        if (disabled) {
+                            dbgui_begin_disabled(TRUE);
+                        }
+                        if (dbgui_button("->")) {
+                            queuedChapterSelect = i;
+                        }
+                        dbgui_same_line();
+                        dbgui_text(chapter->name);
+                        if (disabled) {
+                            dbgui_end_disabled();
+                        }
                     }
+
+                    dbgui_pop_id();
                 }
-                dbgui_end_combo();
             }
-            if (dbgui_button("Go")) {
-                queuedChapterSelect = selectedChapter;
-            }
+            dbgui_end_child();
         }
         dbgui_end();
     }
