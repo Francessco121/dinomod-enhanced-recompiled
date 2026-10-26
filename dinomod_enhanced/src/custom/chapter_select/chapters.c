@@ -731,6 +731,236 @@ static void ch_swapstone_hollow_2(void) {
     }
 }
 
+static void ch_darkice_1(void) {
+    /* swapstone hollow */
+    mainSetBits(BIT_Talking_to_Rocky, 0);
+
+    /* snowhorn wastes */
+    mainSetBits(BIT_Garunda_Te_Fed, 1);
+    mainSetBits(BIT_104, 1); // NWminedoor
+    mainSetBits(BIT_Garunda_Te_Quest_Progress, 5);
+    mainSetBits(BIT_11A, 1); // NWMultiSeq 0x32D52 played
+    mainSetBits(BIT_120, 1); // SnowClaw 0x41D81 defeated bit
+    mainSetBits(BIT_121, 1); // SnowClaw 0x30A70 defeated bit
+    mainSetBits(BIT_Garunda_Te_Weeds_Eaten, 10);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 142);
+    mainSetBits(BIT_763, 142); // HitAnimator 0x15F4
+
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G_None);
+    chselect_set_map_state(MAP_DARK_ICE_MINES_1, 1, G0);
+    chselect_set_map_state(MAP_SNOWHORN_WASTES, 1, G12);
+
+    /* mine entrance */
+    chselect_set_location(PLAYER_SABRE, -6808.006348f, -1202.555176f, 1838.698242f, M_180_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.unk0[0] = 389;
+    light.unk0[1] = 390;
+    light.unk4 = 394;
+    light.unk6 = 403;
+    light.unkC[1] = 204;
+    light.unk12 = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 180;
+    env.unk6 = 182;
+    env.unk8 = 181;
+    env.unkA = 183;
+    env.unk3D = 0;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 281, -1, 77, -1);
+}
+
+static void ch_darkice_2(void) {
+    /* dim1 */
+    chselect_move_setup(0x16FC, MAP_DARK_ICE_MINES_1, -8113.85f, -1492.0f, 4288.9f); // DIMPushBlock
+    chselect_move_setup(0x30104, MAP_DARK_ICE_MINES_1, -7470.120605f, -1079.900024f, 6638.58252f); // DIMBoulder
+
+    mainSetBits(BIT_DIM_Famished_SnowHorn_Met, 1);
+    mainSetBits(BIT_DIM_Famished_SnowHorn_Fed_One_Alpine_Root, 1);
+    mainSetBits(BIT_DIM_Used_Mine_Key, 1);
+    mainSetBits(BIT_DIM_Mine_Key, 1);
+    mainSetBits(BIT_33, 1); // AlphaAnimator 0x1659
+    mainSetBits(BIT_35, 1); // AlphaAnimator 0x1699
+    mainSetBits(BIT_3A, 1); // DIMLavaBallGene 0x1570
+    mainSetBits(BIT_3B, 1); // DIMLavaBallGene 0x186E
+    mainSetBits(BIT_DIM_Shackled_SnowHorn_Freed, 1);
+    mainSetBits(BIT_147, 1); // DIMLavaBallGene 0x1878
+    mainSetBits(BIT_155, 1); // DIMBridgeCogCol 0x1BE0 discovered
+    mainSetBits(BIT_156, 1); // DIMSeqObject 0x1BB0 played
+    mainSetBits(BIT_15B, 1); // DIMShackleKey 0x1642 discovered
+    mainSetBits(BIT_16D, 1); // DIMAlpineRoot 0x16A4 collected
+    mainSetBits(BIT_16E, 1); // DIMAlpineRoot 0x16AA collected
+    mainSetBits(BIT_DIM_Famished_SnowHorn_Fed_Two_Alpine_Roots, 1);
+    mainSetBits(BIT_DIM_Defeated_SharpClaw_Hurting_Fallen_SnowHorn, 1);
+    mainSetBits(BIT_17A, 1); // DIMLever 0x1B15 used
+    mainSetBits(BIT_DIM_Gear_1, 1);
+    mainSetBits(BIT_17C, 1); // DIMBridge 0x1B4D play bit
+    mainSetBits(BIT_17D, 1); // DIMBridge 0x1B4D played bit
+    mainSetBits(BIT_DIM_Gear_2, 1);
+    mainSetBits(BIT_DIM_Gear_3, 1);
+    mainSetBits(BIT_DIM_Gear_4, 1);
+    mainSetBits(BIT_DIM_Used_Gear_1, 1);
+    mainSetBits(BIT_DIM_Used_Gear_2, 1);
+    mainSetBits(BIT_DIM_Used_Gear_3, 1);
+    mainSetBits(BIT_DIM_Used_Gear_4, 1);
+    mainSetBits(BIT_1DB, 1); // DIMLever 0x1CCB used
+    mainSetBits(BIT_1DC, 1); // DIMSeqObject 0x1BB0 play bit
+    mainSetBits(BIT_1E1, 1); // DIMLever 0x1CCB enabled
+    mainSetBits(BIT_1E2, 1); // DIMWoodDoor 0x1CE1 destroyed
+    mainSetBits(BIT_1E3, 1); // DIMLever 0x1DDD used
+    mainSetBits(BIT_1E4, 1); // DIMBridge 0x1DD9 play
+    mainSetBits(BIT_1E5, 1); // DIMBridge 0x1DD9 played
+    mainSetBits(BIT_1E8, 1); // DIMSeqObject 0x1EA1 play
+    mainSetBits(BIT_DIM_Magic_Bridge_Visible, 1);
+    mainSetBits(BIT_Horn_of_Truth, 1);
+    mainSetBits(BIT_1EF, 1); // ?
+    mainSetBits(BIT_1FF, 1); // DIMTruthHornPli 0x20C7 play bit
+    mainSetBits(BIT_Tricky_Learned_Flame, 1);
+    mainSetBits(BIT_3CF, 1); // cannon claw defeated
+    mainSetBits(BIT_3E5, 1); // DIMPushBlock 0x16FC
+    mainSetBits(BIT_Tricky_Dug_Up_Horn_of_Truth_Pad, 1);
+    //mainSetBits(BIT_DIM_Gear_3_Random_Tent, 11);
+    mainSetBits(BIT_4A8, 1); // DIMBridgeCogCol 0x30CC8 discovered
+    mainSetBits(BIT_Burned_DIMTent_5, 1);
+    mainSetBits(BIT_Burned_DIMTent_4, 1);
+    mainSetBits(BIT_Burned_DIMTent_3, 1);
+    mainSetBits(BIT_Burned_DIMTent_2, 1);
+    mainSetBits(BIT_Burned_DIMTent_1, 1);
+    mainSetBits(BIT_Burned_DIMTent_0, 1);
+    mainSetBits(BIT_Burned_DIMTent_11, 1);
+    mainSetBits(BIT_Burned_DIMTent_10, 1);
+    mainSetBits(BIT_Burned_DIMTent_9, 1);
+    mainSetBits(BIT_Burned_DIMTent_8, 1);
+    mainSetBits(BIT_Burned_DIMTent_7, 1);
+    mainSetBits(BIT_Burned_DIMTent_6, 1);
+    mainSetBits(BIT_4CE, 3); // DIMboulder times hit
+    mainSetBits(BIT_Tricky_Talk_Sequence, 44);
+    mainSetBits(BIT_Tricky_Spawns, 0); // bye bye
+    mainSetBits(BIT_540, 1); // ?
+    mainSetBits(BIT_DIM_Lit_Igloo_Fire_One, 1);
+    mainSetBits(BIT_DIM_Lit_Igloo_Fire_Two, 1);
+    mainSetBits(BIT_DIM_Lit_Igloo_Fire_Three, 1);
+    mainSetBits(BIT_DIM_Lit_All_Igloo_Fires, 1);
+    mainSetBits(BIT_8A5, 1); // DIMSeqObject 0x426E0 played bit
+
+    chselect_set_map_state(MAP_DARK_ICE_MINES_1, 1, G6 | G8 | G14);
+
+    /* before bike */
+    chselect_set_location(PLAYER_SABRE, -9106.515f, -909.450f, 6638.054f, M_180_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.unk0[0] = 160;
+    light.unk0[1] = 430;
+    light.unk4 = 433;
+    light.unk6 = 403;
+    light.unkC[1] = 223;
+    light.unk12 = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 224;
+    env.unk6 = 292;
+    env.unk8 = 9;
+    env.unkA = 291;
+    env.unkC = 300;
+    env.unk10 = -9322; env.unk14 = -763; env.unk18 = 7062;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 281, -1, 96, -1);
+}
+
+static void ch_galadon(void) {
+    /* dim 2*/
+    chselect_move_setup(0x2724, MAP_DARK_ICE_MINES_2, -7440.065f, -2647.811f, 6830.156f); // DIMPushBlock (to boss room)
+
+    mainSetBits(BIT_91, 1); // sideload 0x331F1 unlocked (tricky's cell?)
+    mainSetBits(BIT_Belina_Te_Cell_Key, 1);
+    mainSetBits(BIT_Tricky_Cell_Key, 1);
+    mainSetBits(BIT_1F5, 1); // DIM2SilverKey 0x216D discovered
+    mainSetBits(BIT_1FA, 1); // DIM2SeqObject 0x1E98 play
+    mainSetBits(BIT_1FB, 1); // DIM2SeqObject 0x1E98 played
+    mainSetBits(BIT_207, 1); // DIM2CellLever 0x2182 used
+    mainSetBits(BIT_208, 1); // DIM2CellLever 0x2181 used
+    mainSetBits(BIT_215, 1); // DIM2CellDoorLef 0x219C restore
+    mainSetBits(BIT_217, 1); // DIMIceWall 0x21FD
+    mainSetBits(BIT_218, 1); // HitAnimator 0x2DDE
+    mainSetBits(BIT_219, 1); // DIM2CellDoorLef 0x219C open
+    mainSetBits(BIT_21A, 1); // DIM2CellDoorLef 0x219A open
+    mainSetBits(BIT_223, 1); // DIM2SeqObject 0x2061 play
+    mainSetBits(BIT_224, 1); // DIM2SeqObject 0x2061 played
+    mainSetBits(BIT_22F, 1); // ExplodeAnimator 0x225B trigger
+    mainSetBits(BIT_230, 1); // ExplodeAnimator 0x225B exploded
+    mainSetBits(BIT_240, 1); // DIM2PuzzleKey 0x2233 discovered
+    mainSetBits(BIT_DIM_Door_Key_1, 1);
+    mainSetBits(BIT_24B, 1); // DIM2UseObject 0x33EEB used
+    mainSetBits(BIT_254, 1); // DIM2Icicle 0x241F fell
+    mainSetBits(BIT_255, 1); // DIM2Icicle 0x241E fell
+    mainSetBits(BIT_26C, 1); // DIM2Icicle 0x241A fell
+    mainSetBits(BIT_26D, 1); // DIM2Icicle 0x2419 fell
+    mainSetBits(BIT_26E, 1);
+    mainSetBits(BIT_26F, 1);
+    mainSetBits(BIT_270, 1);
+    mainSetBits(BIT_271, 1);
+    mainSetBits(BIT_DIM_Pushed_Ice_Block_Into_Lake, 1);
+    mainSetBits(BIT_278, 1); // ! used by DIMlever and SC_meterblock
+    mainSetBits(BIT_279, 1); // DIM2IceGrateDoo 0x2451 open
+    mainSetBits(BIT_27A, 1); // DIM2IceGrateDoo 0x2451 restore
+    mainSetBits(BIT_27B, 1);
+    mainSetBits(BIT_27C, 1);
+    mainSetBits(BIT_27D, 1);
+    mainSetBits(BIT_27E, 1);
+    mainSetBits(BIT_27F, 1); // ProjectileSwitc 0x245E
+    mainSetBits(BIT_280, 1); // ProjectileSwitc 0x245F
+    mainSetBits(BIT_281, 1); // ProjectileSwitc 0x2460
+    mainSetBits(BIT_DIM_Door_Key_2, 1);
+    mainSetBits(BIT_285, 1); // DIM2PuzzleDoor 0x33EEE open
+    mainSetBits(BIT_286, 1); // DIM2PuzzleKey 0x2472 discovered
+    mainSetBits(BIT_28C, 1);
+    mainSetBits(BIT_2C2, 1); // DIM2SeqObject 0x33EEA play
+    mainSetBits(BIT_2C3, 1); // DIM2SeqObject 0x33EEA played
+    mainSetBits(BIT_35F, 1); // IMSnowBike 0x3037B
+    mainSetBits(BIT_40A, 1); // DIMBikeDoor 0x303B9
+    mainSetBits(BIT_Tricky_Talk_Sequence, 71);
+    mainSetBits(BIT_Tricky_Spawns, 1);
+    mainSetBits(BIT_354, 1); // WallAnimator 0x2723 dug
+
+    chselect_set_map_state(MAP_DARK_ICE_MINES_1, 1, G_None);
+    chselect_set_map_state(MAP_DARK_ICE_MINES_2, 0, G6); // why act 0?
+    chselect_set_map_state(MAP_BOSS_GALADON, 1, G0 | G1 | G6);
+
+    chselect_set_min_scarabs(PLAYER_SABRE, 50);
+
+    /* boss room */
+    chselect_set_location(PLAYER_SABRE, -7474.890, -2974.000, 7299.699, M_180_DEGREES, -2);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.unk0[0] = 220;
+    light.unk0[1] = 241;
+    light.unk4 = 322;
+    light.unk6 = 274;
+    light.isInside = 1;
+    light.unk12 = 74;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 220;
+    env.unk6 = 292;
+    env.unk8 = 219;
+    env.unkA = 291;
+    env.unkC = 300;
+    env.unk10 = -9322; env.unk14 = -763; env.unk18 = 7062;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    // Note: Usually you get here with ambience 93 (lava sounds) but without it actually playing?
+    //       Using silent ambience from earlier in DIM2 instead.
+    chselect_set_music(PLAYER_SABRE, /*93*/ 281, -1, 135, -1);
+}
+
 static void ch_crf_start(void) {
     //set_map(MAP_CLOUDRUNNER_FORTRESS, 0, PLAYER_KRYSTAL);
 
@@ -783,9 +1013,9 @@ static Chapter chapters[] = {
     // Sabre Act 2 (SpellStone 1, Spirit 2)
     { "SnowHorn Peril", NULL },
     { "SwapStone Hollow 2", ch_swapstone_hollow_2 },
-    { "DarkIce Mines 1", ch_stub },
-    { "DarkIce Mines 2", ch_stub },
-    { "Boss Galadon", ch_stub },
+    { "DarkIce Mines 1", ch_darkice_1 },
+    { "DarkIce Mines 2", ch_darkice_2 },
+    { "Boss Galadon", ch_galadon },
     { "SwapStone Hollow 2 (River)", ch_stub },
     { "Diamond Bay 1", ch_stub },
     { "Volcano Force Point 1", ch_stub },
