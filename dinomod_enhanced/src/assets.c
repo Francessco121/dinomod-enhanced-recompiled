@@ -25,20 +25,37 @@
 #include "objects/427_DFLevelControl.h"
 #include "objects/511_SHboulder.h"
 #include "objects/779_WCLevelControl.h"
-#include "objects/780_WCBeacon.h"
 #include "objects/781_WCPressureSwitch.h"
 #include "trigger_object_macros.h"
 
+#include "PR/libaudio.h"
 #include "PR/ultratypes.h"
-#include "dlls/objects/common/collectable.h"
 #include "dlls/engine/29_gplay.h"
 #include "dlls/engine/33_BaddieControl.h"
+#include "dlls/engine/90_camstatic.h"
 #include "dlls/objects/325_trigger.h"
-#include "dlls/objects/418_DFriverflow.h"
 #include "dlls/objects/420_DFlevelcontrol.h"
 #include "dlls/objects/779_WCLevelControl.h"
 #include "game/objects/object.h"
 #include "game/objects/object_id.h"
+#include "game/objects/setups/6_Collectable.h"
+#include "game/objects/setups/9_EffectBox.h"
+#include "game/objects/setups/35_TexScroll.h"
+#include "game/objects/setups/51_Generic.h"
+#include "game/objects/setups/55_Riverflow.h"
+#include "game/objects/setups/71_LevelName.h"
+#include "game/objects/setups/78_GroundAnimator.h"
+#include "game/objects/setups/79_HitAnimator.h"
+#include "game/objects/setups/82_VisAnimator.h"
+#include "game/objects/setups/85_ProjectileTarget.h"
+#include "game/objects/setups/88_UseObj.h"
+#include "game/objects/setups/89_SeqObj.h"
+#include "game/objects/setups/92_NWMultiSeq.h"
+#include "game/objects/setups/100_EWTrobotpatrolB.h"
+#include "game/objects/setups/103.h"
+#include "game/objects/setups/108_MagicPlant.h"
+#include "game/objects/setups/118_FXEmit.h"
+#include "game/objects/setups/Trigger.h"
 #include "game/gamebits.h"
 #include "macros.h"
 #include "sys/gfx/animseq.h"
@@ -202,6 +219,7 @@ INCBIN(models_wcsuntemplelift,    "inc/models_0957_WCSunTempleLift.bin");
 INCBIN(models_wcmoontemplelift,   "inc/models_0958_WCMoonTempleLift.bin");
 INCBIN(models_wcsuntempleswitch,  "inc/models_0964_WCSunTempleSwitch.bin");
 INCBIN(models_dfpt_lift1,         "inc/models_0364_DFPLift1.bin");
+INCBIN(models_shadowhunter,       "inc/models_0136_ShadowHunter_repaired.bin");
 
 #define BLOCKS_REPLACE_BASE(trkblk, trkblkBaseID, blockID, file) (reasset_blocks_set(trkblk, reasset_base_id(blockID - trkblkBaseID), REASSET_BASE_NAMESPACE, file, file##_end  - file))
 #define MODELS_REPLACE_BASE(modelID, file) (reasset_models_set(reasset_base_id(modelID), REASSET_BASE_NAMESPACE, file, file##_end  - file))
@@ -333,7 +351,7 @@ static void walled_city_additions(void) {
                 fxemit.base.x += 0.0f;
                 fxemit.base.y += -0.24524f;
                 fxemit.base.z += 0.846679f;
-                fxemit.indexInBank = 0x741; // Circular blue glow inside of aperture
+                fxemit.id = 0x741; // Circular blue glow inside of aperture
                 fxemit.fxRate = -5;
                 fxemit.yawSpeed = 0;
                 break;
@@ -341,7 +359,7 @@ static void walled_city_additions(void) {
                 fxemit.base.x += -0.266602f;
                 fxemit.base.y += -1.635926f - 9.0f;
                 fxemit.base.z += 0.492187f + -70.0f;
-                fxemit.indexInBank = 0x25A; // Blue beams
+                fxemit.id = 0x25A; // Blue beams
                 fxemit.fxRate = -1;
                 fxemit.yawSpeed = 0;
                 break;
@@ -596,7 +614,7 @@ static void walled_city_modifications(void) {
                 scroll->base.fadeFlags = OBJSETUP_FADE_CAMERA;
                 scroll->base.fadeDistance = 255;
                 scroll->textureIndex = 58;
-                scroll->speedU = 2;
+                scroll->uSpeedA = 2;
                 scroll->gamebitActivate = NO_GAMEBIT;
                 reasset_map_objects_set(walledCity, 
                     reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
@@ -813,7 +831,7 @@ static void walled_city_modifications(void) {
                 fx->base.fadeDistance = 50;
                 fx->activationRange = 0;
                 fx->bank = 0;
-                fx->indexInBank = 0xD4;
+                fx->id = 0xD4;
                 fx->fxRate = -2;
                 fx->toggleGamebit = DINOMOD_BIT_965_WC_Jungle_Door_Lever_Sun;
                 fx->disableGamebit = DINOMOD_BIT_96A_WC_Jungle_Door_Open;
@@ -1042,7 +1060,7 @@ static void walled_city_modifications(void) {
         {
             // Sun beacon
             {
-                WCBeacon_Setup* sunBeacon = reasset_map_objects_get(walledCity, 
+                WCBeacon_Setup_Dinomod* sunBeacon = reasset_map_objects_get(walledCity, 
                     reasset_base_id(0x411B2), NULL);
                 sunBeacon->gamebitSwitch = BIT_WC_Sun_Pressure_Switch_Active;
                 sunBeacon->gamebitSlab = BIT_WC_SlabDoor_Sun_Symbol_Lit;
@@ -1050,7 +1068,7 @@ static void walled_city_modifications(void) {
 
             // Moon beacon
             {
-                WCBeacon_Setup* sunBeacon = reasset_map_objects_get(walledCity, 
+                WCBeacon_Setup_Dinomod* sunBeacon = reasset_map_objects_get(walledCity, 
                     reasset_base_id(0x411B5), NULL);
                 sunBeacon->gamebitSwitch = BIT_WC_Moon_Pressure_Switch_Active;
                 sunBeacon->gamebitSlab = BIT_WC_SlabDoor_Moon_Symbol_Lit;
@@ -1127,7 +1145,7 @@ static void walled_city_modifications(void) {
             {
                 //WarpPoint (handles inbound and outbound warps)
                 {
-                    WarpPoint_Setup* warp = reasset_map_objects_get(walledCity, 
+                    Warp_Setup_Dinomod* warp = reasset_map_objects_get(walledCity, 
                         reasset_base_id(0x413ae), NULL);
                     warp->mode = WarpPoint_CUSTOMMODE_5;
                     warp->isInboundWarp = TRUE; //NOTE: it's both inbound and outbound!
@@ -1159,7 +1177,7 @@ static void walled_city_modifications(void) {
                 //WarpPoint (handles inbound and outbound warp)
                 //Has a custom arrival sequence and departure sequence, which only play on revisits
                 {
-                    WarpPoint_Setup* warp = reasset_map_objects_get(wcBossRoom, 
+                    Warp_Setup_Dinomod* warp = reasset_map_objects_get(wcBossRoom, 
                         reasset_base_id(0x413B0), NULL);
                     warp->base.x = 1376.557;
                     warp->base.z = -1680.0;
@@ -2058,7 +2076,7 @@ static void walled_city_modifications(void) {
                     {
                         //Maze entry illusory wall (0x412e1)
                         {
-                            AlphaAnimator_Setup alphaAnim = {
+                            AlphaAnimator_Setup_Dinomod alphaAnim = {
                                 .base = {
                                     .objId = OBJ_AlphaAnimator,
                                     .actExclusions1 = 0,
@@ -2087,7 +2105,7 @@ static void walled_city_modifications(void) {
 
                         //Last maze illusory wall (0x4148e)
                         {
-                            AlphaAnimator_Setup alphaAnim = {
+                            AlphaAnimator_Setup_Dinomod alphaAnim = {
                                 .base = {
                                     .objId = OBJ_AlphaAnimator,
                                     .actExclusions1 = 0,
@@ -2128,7 +2146,7 @@ static void walled_city_modifications(void) {
                             // 0x4148e
                         };
                         for (u32 i = 0; i < ARRAYCOUNT(alphaAnimatorUIDs); i++) {
-                            AlphaAnimator_Setup* alphaAnim = GET_MAPS_OBJECT(walledCity, alphaAnimatorUIDs[i]);
+                            AlphaAnimator_Setup_Dinomod* alphaAnim = GET_MAPS_OBJECT(walledCity, alphaAnimatorUIDs[i]);
                             alphaAnim->opaqueAtMaxOpacity = TRUE;
                             alphaAnim->soundIDReverse = SOUND_7AF_Switch_Reset_Swoosh;
 
@@ -2375,7 +2393,7 @@ static void walled_city_modifications(void) {
 
                 //Fix a bug where you could see the skylight hall's semi-transparent light beams through the illusory wall 
                 {
-                    AlphaAnimator_Setup* alphaAnim = GET_MAPS_OBJECT(walledCity, 0x41688);
+                    AlphaAnimator_Setup_Dinomod* alphaAnim = GET_MAPS_OBJECT(walledCity, 0x41688);
                     alphaAnim->mode = AlphaAnimator_MODE_0_Basic_Fade_and_Set_Gamebit;
                     alphaAnim->playSound = TRUE;
                     alphaAnim->opaqueAtMaxOpacity = TRUE;
@@ -2426,7 +2444,7 @@ static void walled_city_modifications(void) {
                         },
                         COORDS_SETUP(3703, -1127, -3270),
                         .textureIndex = 58,
-                        .speedU = 2,
+                        .uSpeedA = 2,
                         .gamebitActivate = NO_GAMEBIT
                     };
                     reasset_map_objects_set(walledCity, 
@@ -2810,11 +2828,11 @@ static void dragon_rock_upper_modifications(void) {
     reasset_map_objects_delete(drTop, reasset_base_id(0x406A1));
 
     // Only enable callpads after the Earth Warrior has been brought to the surface (normally they are always enabled)
-    DR_EarthCallPad_Setup* callpad;
+    Generic_Setup* callpad;
     callpad = reasset_map_objects_get(drTop, reasset_base_id(0x4033C), NULL);
-    callpad->gamebitEnabled = 0x656;
+    callpad->bitB = 0x656;
     callpad = reasset_map_objects_get(drTop, reasset_base_id(0x4059C), NULL);
-    callpad->gamebitEnabled = 0x656;
+    callpad->bitB = 0x656;
 
     // Change partfx ID of emitters on the pressure pad dig spots to something that actually exists
     // TODO: the chosen partfx here is arbitrary, there's likely a better one to pick
@@ -2822,11 +2840,11 @@ static void dragon_rock_upper_modifications(void) {
         FXEmit_Setup* fxemit;
 
         fxemit = reasset_map_objects_get(drTop, reasset_base_id(0x353AC), NULL);
-        fxemit->indexInBank = 0x6DC;
+        fxemit->id = 0x6DC;
         fxemit = reasset_map_objects_get(drTop, reasset_base_id(0x40497), NULL);
-        fxemit->indexInBank = 0x6DC;
+        fxemit->id = 0x6DC;
         fxemit = reasset_map_objects_get(drTop, reasset_base_id(0x404B2), NULL);
-        fxemit->indexInBank = 0x6DC;
+        fxemit->id = 0x6DC;
     }
 }
 
@@ -2927,13 +2945,13 @@ static void cape_claw_modifications(void) {
     // riverflow is great for stopping the player from leaving the shore but makes it unnecessarily difficult to get
     // to the golden nugget cave with the log.
     {
-        DFriverflow_Setup* riverflow = reasset_map_objects_get(capeClaw, reasset_base_id(0x300A9), NULL);
+        Riverflow_Setup* riverflow = reasset_map_objects_get(capeClaw, reasset_base_id(0x300A9), NULL);
         riverflow->flags = 0xFE; // ignore log but not player
     }
 
     // Edit outer CC riverflows to prevent the player from leaving the area
     {
-        DFriverflow_Setup* riverflow;
+        Riverflow_Setup* riverflow;
 
         // Shift the one close to the golden nugget cave a little closer
         riverflow = reasset_map_objects_get(capeClaw, reasset_base_id(0x300AC), NULL);
@@ -2945,7 +2963,7 @@ static void cape_claw_modifications(void) {
         riverflow->range = 200;
 
         // New riverflow to fill in a gap
-        DFriverflow_Setup newRiverflow = {
+        Riverflow_Setup newRiverflow = {
             .base = {
                 .objId = OBJ_DFriverflow,
                 .actExclusions1 = 0xF8,
@@ -3392,7 +3410,7 @@ static void swapstone_hollow_additions(void) {
 
     //Add TexScrolls for the waterfall leading down to Diamond Bay
     {
-        TexScroll2_Setup texScrollData[] = {
+        TexScroll_Setup texScrollData[] = {
             {.base.x = 563.975, .base.y = -671.187, .base.z = 961.741, .textureIndex = 30, RIVER_BIT, 0, 3, 0,  7, 31}, //block989 (Diamond Bay waterfall basin 1) (upper river)
             {.base.x = 501.871, .base.y = -671.187, .base.z = 981.222, .textureIndex = 37, RIVER_BIT, 0, 0, 0, -7, -1}, //block989 (Diamond Bay waterfall basin 1) (waterfall top)
             {.base.x = 483.437, .base.y = -638.000, .base.z = 981.222, .textureIndex = 45, RIVER_BIT, 0, 0, 0, -7, -1}, //block989 (Diamond Bay waterfall basin 1) (waterfall main)
@@ -3400,7 +3418,7 @@ static void swapstone_hollow_additions(void) {
 
         //Insert the new objects
         for (u32 i = 0; i < ARRAYCOUNT(texScrollData); i++) {
-            TexScroll2_Setup* scroll = &texScrollData[i];
+            TexScroll_Setup* scroll = &texScrollData[i];
             scroll->base.objId = OBJ_texscroll2;
             scroll->base.actExclusions1 = ~MAP_ACT(1);
             scroll->base.loadFlags = OBJSETUP_LOAD_LEVEL;
@@ -3408,7 +3426,7 @@ static void swapstone_hollow_additions(void) {
             scroll->base.loadDistance = 140;
             scroll->base.fadeDistance = 140;
             reasset_map_objects_set(mapID, 
-                reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup)
+                reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
             );
         }
     }
@@ -3599,8 +3617,8 @@ static void swapstone_hollow_modifications(void) {
     // Edit SHplantspore leading to the SwapStone to only become enabled after saving the queen EarthWalker
     // (in vanilla, this enables after the Thorntail by the well moves. it's just looking for the wrong Thorntail basically)
     {
-        DLL506_Setup* plantSpore = reasset_map_objects_get(sHollow, reasset_base_id(0x34DF5), NULL);
-        plantSpore->unk20 = BIT_SH_Move_Thorntail_Blocking_Swapstone; // 0x8D4
+        Generic_Setup* plantSpore = reasset_map_objects_get(sHollow, reasset_base_id(0x34DF5), NULL);
+        plantSpore->bitB = BIT_SH_Move_Thorntail_Blocking_Swapstone; // 0x8D4
     }
 
     // Edit TriggerCylinder around Rocky, so it unsets the "Exiting the Shop" gamebit
@@ -3624,6 +3642,21 @@ static void swapstone_hollow_modifications(void) {
     {
         Trigger_Setup* plane = GET_MAPS_OBJECT(sHollow, 0x40B75);
         DIRECTIONAL_OBJGROUP_TOGGLE_REVERSE(6, plane, 1, 2);
+    }
+
+    //Handle unloading/loading Tricky at the tree hollow entrance to SwapStone Hollow Well
+    {
+        //Unload Tricky when entering/exiting SwapStone Hollow Well from the surface
+        {
+            Trigger_Setup* plane = GET_MAPS_OBJECT(sHollow, 0x000019A7);
+            BIDIRECTIONAL_SIDEKICK_UNLOAD(plane, 2);
+        }
+
+        //Edit the SideLoad near the tree stump, so it can reload Tricky after previously loading him 
+        {
+            SideLoad_Setup_Dinomod* sideload = GET_MAPS_OBJECT(sHollow, 0x00030DF9);
+            sideload->options = SideLoad_OPTION_Repeatable;
+        }
     }
 }
 
@@ -3951,6 +3984,74 @@ static void music_patch(void) {
 
         //Increase the harp's reverb, so it doesn't sound too tinny
         channel7[0x17] = 80;
+    }
+
+    //Discovery Falls
+    {
+        #define DISCOVERY_FALLS_MUSICID 0x3F
+
+        //Get a pointer to the music's MIDI data
+        u32 songOffset = tab[1] + (u32)midis[DISCOVERY_FALLS_MUSICID].offset;
+        u8* song = bin + songOffset;
+        u32* channelOffsets = (u32*)song;
+
+        //Fixes an issue where channel 5 of Discovery Falls (Triangle -> Choir Ahhs -> Triangle) plays for 1 bar less
+        //than the rest of the main outdoor piece's channels before looping, which caused it to gradually desync and 
+        //create a more and more noticeable "round" effect each time the music loops.
+        {
+            u8* channel5 = song + channelOffsets[5];
+
+            u8 patch[] = {
+                0x95, //Note events
+
+                //One full bar of the triangle part
+                //(so the pattern can be replayed with 1 repeat instead of 2, 
+                //freeing some space for an extra bar at the end)
+                0x48, 0x30, 0x44, 0x56,                             //C6
+                0x48, 0x30, 0x44, 0x60,                             //C6 
+                0x30, 0x30, 0x81, 0x24, 0x81, 0x40,          //C5
+                0x48, 0x30, 0x44, 0x60,                         //C6 
+                0x48, 0x30, 0x44, 0x60,                         //C6 
+                0x30, 0x30, 0x82, 0x04, 0x82, 0x20,         //C5
+                0x48, 0x30, 0x81, 0x24, 0x81, 0x40,   //C6 
+                0x30, 0x30, 0x44, 0x60,                               //C5
+                0x48, 0x30, 0x44, 0x60,                         //C6
+                0x48, 0x30, 0x44, 0x60,                         //C6 
+                0x30, 0x30, 0x81, 0x24, 0x81, 0x4A,         //C5
+                
+                //Repeat Codes
+                0xFE, 0x00, 0x34, 0x34,     //Bar 2 (After the Choir Ahhs)
+                0xFE, 0x00, 0x38, 0x34,     //Bar 3 
+                0xFE, 0x00, 0x3C, 0x34,     //Bar 4 
+                0xFE, 0x00, 0x40, 0x34,     //Bar 5 
+                0xFE, 0x00, 0x44, 0x34,     //Bar 6 
+                0xFE, 0x00, 0x48, 0x34,     //Bar 7 
+                0xFE, 0x00, 0x4C, 0x34,     //Bar 8 
+                0xFE, 0x00, 0x50, 0x34,     //Bar 9 
+                0xFE, 0x00, 0x54, 0x34,     //Bar 10 
+                0xFE, 0x00, 0x58, 0x34,     //Bar 11
+                0xFE, 0x00, 0x5C, 0x34,     //Bar 12
+                0xFE, 0x00, 0x60, 0x34,    //Bar 13
+                0xFE, 0x00, 0x64, 0x34, //Bar 14
+                0xFE, 0x00, 0x68, 0x32, //Bar 15 (New! Fixes the desync on loops)
+
+                //Shorter timeOffset of 192 before the loop (which is why we read 2 fewer bytes in the last repeat above)
+                0x81, 0x40, //Should ensure it's still properly synced after the loop
+
+                //Loop End
+                0xFF, 0x2D, 0xFF, 0xFF, 0x00, 0x00, 0x01, 0x34, 0x00, 
+            
+                //Channel End (Unused since it loops forever, but here for consistency)
+                0xFF, 0x2F,
+
+                //Padding
+                0x0 
+            };
+
+            for (u32 i = 0; i < ARRAYCOUNT(patch); i++) {
+                song[0xD6F + i] = patch[i];
+            }
+        }
     }
 
     //Update AUDIO.bin
@@ -4311,7 +4412,7 @@ static void diamond_bay_modifications(void) {
 
     // Add a gamebit to the WaterFallSpray at the start of the DB river
     {
-        WaterFallSpray_Setup* spray = reasset_map_objects_get(db, reasset_base_id(0x4205B), NULL);
+        WaterFallSpray_Setup_Dinomod* spray = reasset_map_objects_get(db, reasset_base_id(0x4205B), NULL);
         spray->gamebit = RIVER_BIT;
         spray->invertGamebit = TRUE;
     }
@@ -4339,14 +4440,14 @@ static void swapstone_circle_modifications(void) {
 
     //Add texscrolls so Discovery Falls' initial area's water isn't static while crawling in
     {
-        TexScroll2_Setup texScrollData[] = {
+        TexScroll_Setup texScrollData[] = {
             { COORDS_SETUP(-162.777, 160.360, 2949.891), .textureIndex = 36,   .blendTextureIndex = 0x14, .uSpeedB = -1, .vSpeedB = -1, .uSpeedA = 0, .vSpeedA = -3 }, //water (use lower falls' water texture)
             { COORDS_SETUP(-149.724, 163.000, 2635.210), .textureIndex = 1,    .blendTextureIndex = 3,    .uSpeedB =  0, .vSpeedB =  0, .uSpeedA = 0, .vSpeedA =  5 }, //waterfall
             { COORDS_SETUP(-146.172, 261.784, 2613.801), .textureIndex = 0x17, .blendTextureIndex = 0x14, .uSpeedB = -1, .vSpeedB = -1, .uSpeedA = 0, .vSpeedA = -5 }, //foam
         };
 
         for (u32 i = 0; i < ARRAYCOUNT(texScrollData); i++) {
-            TexScroll2_Setup* scroll = &texScrollData[i];
+            TexScroll_Setup* scroll = &texScrollData[i];
             scroll->base.objId = OBJ_texscroll2;
             scroll->base.loadFlags = OBJSETUP_LOAD_MAIN;
             scroll->base.fadeFlags = OBJSETUP_FADE_CAMERA;
@@ -4354,7 +4455,7 @@ static void swapstone_circle_modifications(void) {
             scroll->base.fadeDistance = 32;
             scroll->gamebitActivate = NO_GAMEBIT;
             reasset_map_objects_set(swapStoneCircle, 
-                reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup)
+                reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
             );
         }
     }
@@ -4430,7 +4531,7 @@ static void discovery_falls_modifications(void) {
             {0x00002148, 0x00002149 }  //Mole cave
         };
         for (u32 i = 0; i < ARRAYCOUNT(podiumUIDPairs); i++) {
-            SeqProp_Setup* podium = GET_MAPS_OBJECT(discoveryFalls, podiumUIDPairs[i][0]);
+            Ctrl103_Setup* podium = GET_MAPS_OBJECT(discoveryFalls, podiumUIDPairs[i][0]);
             UseObj_Setup* podiumSwitch = GET_MAPS_OBJECT(discoveryFalls, podiumUIDPairs[i][1]);
 
             //Tweak the mole cave podium very slightly, so it's exactly aligned with the crawl camera
@@ -4456,7 +4557,7 @@ static void discovery_falls_modifications(void) {
 
     //Add sounds to small/medium waterfalls and rapids (only the large lower falls had sounds originally)
     {
-        SfxPlayer_Setup sfxPlayers[] = {
+        SfxPlayer_Setup_Dinomod sfxPlayers[] = {
             //Approach
             { .soundID = SOUND_BC4_Waterfall_Small, COORDS_SETUP(1130.275, 163, 54),    .base.mapObjGroup = DF_ObjGroup1_Entrance_Magic_Plant_Basin, .fadeDuration = 180, .gamebit = NO_GAMEBIT },    //Entrance
             { .soundID = SOUND_BC4_Waterfall_Small, COORDS_SETUP(994.810,  96,  448),   .base.mapObjGroup = DF_ObjGroup1_Entrance_Magic_Plant_Basin, .fadeDuration = 180, .volume = VOLUME_PERCENT(80), .pitch = -4 }, //Entrance cascade
@@ -4492,7 +4593,7 @@ static void discovery_falls_modifications(void) {
         };
 
         for (u32 i = 0; i < ARRAYCOUNT(sfxPlayers); i++) {
-            SfxPlayer_Setup* sfx = &sfxPlayers[i];
+            SfxPlayer_Setup_Dinomod* sfx = &sfxPlayers[i];
             sfx->base.objId = OBJ_sfxPlayer;
 
             if (sfx->halfRadius == 0) {
@@ -4572,13 +4673,13 @@ static void discovery_falls_modifications(void) {
     {
         //Add texscrolls to the waterfalls' foam
         {
-            TexScroll2_Setup texScrollData[] = {
+            TexScroll_Setup texScrollData[] = {
                 { COORDS_SETUP(1130.276, 163, 75.210) },
                 { COORDS_SETUP(1000, 135, 697) },
             };
 
             for (u32 i = 0; i < ARRAYCOUNT(texScrollData); i++) {
-                TexScroll2_Setup* scroll = &texScrollData[i];
+                TexScroll_Setup* scroll = &texScrollData[i];
                 scroll->base.objId = OBJ_texscroll2;
                 scroll->base.loadFlags = OBJSETUP_LOAD_MAIN;
                 scroll->base.fadeFlags = OBJSETUP_FADE_CAMERA;
@@ -4589,7 +4690,7 @@ static void discovery_falls_modifications(void) {
                 scroll->vSpeedA = 2;
                 scroll->gamebitActivate = NO_GAMEBIT;
                 reasset_map_objects_set(discoveryFalls, 
-                    reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup)
+                    reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
                 );
             }
         }
@@ -4644,7 +4745,7 @@ static void discovery_falls_modifications(void) {
                 CurveSetup* findCurve = GET_MAPS_OBJECT(discoveryFalls, 0x40b58);
                 findCurve->type22.usedBit = BIT_DF_Play_Seq_0016_Kyte_Secures_Rope_Near_BWC;
 
-                FindKyteObject_Setup* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f04);
+                FindKyteObject_Setup_Dinomod* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f04);
                 kyteFind->flags |= FindKyteObject_FLAG_2_Set_Gamebit_After_Timeout;
                 kyteFind->timerSeconds = 10;
             }
@@ -4669,7 +4770,7 @@ static void discovery_falls_modifications(void) {
                 CurveSetup* findCurve = GET_MAPS_OBJECT(discoveryFalls, 0x2567);
                 findCurve->type22.usedBit = BIT_DF_Play_Seq_000F_Kyte_Secures_Rope_Upper_Falls;
 
-                FindKyteObject_Setup* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f20);
+                FindKyteObject_Setup_Dinomod* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f20);
                 kyteFind->flags |= FindKyteObject_FLAG_2_Set_Gamebit_After_Timeout;
                 kyteFind->timerSeconds = 10;
             }
@@ -5120,7 +5221,7 @@ static void discovery_falls_modifications(void) {
                     0x00002dec, //BWC exit
                 };
                 for (u32 i = 0; i < ARRAYCOUNT(waterScrollUIDs); i++) {
-                    TexScroll2_Setup* scroll = GET_MAPS_OBJECT(discoveryFalls, waterScrollUIDs[i]);
+                    TexScroll2_Setup_Dinomod* scroll = GET_MAPS_OBJECT(discoveryFalls, waterScrollUIDs[i]);
                     scroll->textureIndex = 36; //Duplicate of water texture, for different scroll speed within a Block that already has scrolling water 
                     scroll->options |= BlockTexScrollAdd_REUSE_Match_by_Texture | BlockTexScrollAdd_REUSE_Match_by_SpeedsA;
                 }
@@ -5128,13 +5229,13 @@ static void discovery_falls_modifications(void) {
 
             //Add texscroll2s for the top of the Lower Falls, using the Middle Falls' scroll speed
             {
-                TexScroll2_Setup texScrollData[] = {
+                TexScroll2_Setup_Dinomod texScrollData[] = {
                     { COORDS_SETUP(316, 296, 76) },
                     { COORDS_SETUP(-309, 296, 38) },
                 };
 
                 for (u32 i = 0; i < ARRAYCOUNT(texScrollData); i++) {
-                    TexScroll2_Setup* scroll = &texScrollData[i];
+                    TexScroll2_Setup_Dinomod* scroll = &texScrollData[i];
                     scroll->base.objId = OBJ_texscroll2;
                     scroll->base.loadFlags = OBJSETUP_LOAD_MAIN;
                     scroll->base.fadeFlags = OBJSETUP_FADE_CAMERA;
@@ -5146,7 +5247,7 @@ static void discovery_falls_modifications(void) {
                     scroll->gamebitActivate = NO_GAMEBIT;
                     scroll->options |= BlockTexScrollAdd_REUSE_Match_by_Texture | BlockTexScrollAdd_REUSE_Match_by_SpeedsA;
                     reasset_map_objects_set(discoveryFalls, 
-                        reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup)
+                        reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup_Dinomod)
                     );
                 }
             }
@@ -5178,7 +5279,7 @@ static void discovery_falls_modifications(void) {
                     0x00002ded, //Dockpoint
                 };
                 for (u32 i = 0; i < ARRAYCOUNT(waterScrollUIDs); i++) {
-                    TexScroll2_Setup* scroll = GET_MAPS_OBJECT(discoveryFalls, waterScrollUIDs[i]);
+                    TexScroll2_Setup_Dinomod* scroll = GET_MAPS_OBJECT(discoveryFalls, waterScrollUIDs[i]);
                     scroll->options |= BlockTexScrollAdd_REUSE_Match_by_Texture | BlockTexScrollAdd_REUSE_Match_by_SpeedsA;
                 }
             }
@@ -5278,20 +5379,20 @@ static void discovery_falls_modifications(void) {
                 #define CAM_ID_TOXIC_CAVE_UPPER 105
                 #define CAM_ID_TOXIC_CAVE_LOWER 106
 
-                StaticCamera_Setup staticCams[] = {
+                StaticCamera_Setup_Dinomod staticCams[] = {
                     { COORDS_SETUP(580, 470, -248), .cameraID = CAM_ID_TOXIC_CAVE_UPPER, .fov = 80, .flags = CamStatic_LOOK_AT },
                     { COORDS_SETUP(587, 389, -245), .cameraID = CAM_ID_TOXIC_CAVE_LOWER, .fov = 70, .speedFactor = 0x60, .flags = CamStatic_LOOK_AT },
                 };
 
                 for (u32 i = 0; i < ARRAYCOUNT(staticCams); i++) {
-                    StaticCamera_Setup* cam = &staticCams[i];
+                    StaticCamera_Setup_Dinomod* cam = &staticCams[i];
                     cam->base.objId = OBJ_StaticCamera;
                     cam->base.loadFlags = OBJSETUP_LOAD_MAIN;
                     cam->base.fadeFlags = OBJSETUP_FADE_CAMERA;
                     cam->base.loadDistance = FADE_DISTANCE(320);
                     cam->base.fadeDistance = 50;
                     reasset_map_objects_set(discoveryFalls, 
-                        reasset_auto_id(dinomodNs), cam, sizeof(StaticCamera_Setup));
+                        reasset_auto_id(dinomodNs), cam, sizeof(StaticCamera_Setup_Dinomod));
                 }
             }
 
@@ -5378,7 +5479,7 @@ static void discovery_falls_modifications(void) {
                 CurveSetup* findCurve = GET_MAPS_OBJECT(discoveryFalls, 0x32f1d);
                 findCurve->type22.usedBit = BIT_DF_Play_Seq_002F_Kyte_Activates_Turbine;
 
-                FindKyteObject_Setup* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f1a);
+                FindKyteObject_Setup_Dinomod* kyteFind = GET_MAPS_OBJECT(discoveryFalls, 0x00032f1a);
                 kyteFind->flags |= FindKyteObject_FLAG_2_Set_Gamebit_After_Timeout | FindKyteObject_FLAG_4_Start_Timeout_When_Kyte_is_Nearby;
                 kyteFind->timerSeconds = 3;
             }
@@ -5409,13 +5510,13 @@ static void discovery_falls_modifications(void) {
 
         //Add texscrolls to the waterfalls' foam
         {
-            TexScroll2_Setup texScrollData[] = {
+            TexScroll_Setup texScrollData[] = {
                 { COORDS_SETUP(-1007, 300, -196), .base.mapObjGroup = DF_ObjGroup14_Middle_and_Upper_Falls }, //Under turbine
                 { COORDS_SETUP(-1660.168, 514, -427.757), .base.mapObjGroup = DF_ObjGroup14_Middle_and_Upper_Falls }, //Stalactite cave entrance
             };
 
             for (u32 i = 0; i < ARRAYCOUNT(texScrollData); i++) {
-                TexScroll2_Setup* scroll = &texScrollData[i];
+                TexScroll_Setup* scroll = &texScrollData[i];
                 scroll->base.objId = OBJ_texscroll2;
                 scroll->base.loadFlags = OBJSETUP_LOAD_IN_MAP_OBJGROUP;
                 scroll->base.fadeFlags = OBJSETUP_FADE_CAMERA;
@@ -5425,7 +5526,7 @@ static void discovery_falls_modifications(void) {
                 scroll->vSpeedA = 2;
                 scroll->gamebitActivate = NO_GAMEBIT;
                 reasset_map_objects_set(discoveryFalls, 
-                    reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll2_Setup)
+                    reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
                 );
             }
         }
@@ -5439,9 +5540,9 @@ static void discovery_falls_modifications(void) {
             0x000020b1
             };
             for (u32 i = 0; i < ARRAYCOUNT(cradleSwitchUIDs); i++) {
-                ProjectileSwitch_Setup* reverseSwitch = GET_MAPS_OBJECT(discoveryFalls, cradleSwitchUIDs[i]);
+                ProjectileTarget_Setup* reverseSwitch = GET_MAPS_OBJECT(discoveryFalls, cradleSwitchUIDs[i]);
                 reverseSwitch->resetDelay = 15;
-                reverseSwitch->modelIndexAndFlags |= Switch_FLAG_Resets_After_Delay;
+                reverseSwitch->settings |= Switch_FLAG_Resets_After_Delay;
 
                 //Align the first switch with the rope, since it's just off from being aligned with it
                 if (i == 0) {
@@ -5463,7 +5564,7 @@ static void discovery_falls_modifications(void) {
                 0x00032563
             };
             for (u32 i = 0; i < ARRAYCOUNT(ropeScrollUIDs); i++) {
-                TexScroll2_Setup* ropeScroll = GET_MAPS_OBJECT(discoveryFalls, ropeScrollUIDs[i]);
+                TexScroll2_Setup_Dinomod* ropeScroll = GET_MAPS_OBJECT(discoveryFalls, ropeScrollUIDs[i]);
                 ropeScroll->options |= BlockTexScrollAdd_REUSE_Match_by_Texture;
             }
         }
@@ -5727,7 +5828,7 @@ static void discovery_falls_modifications(void) {
             //Don't load the cutscene SharpClaw's DFbarrel when revisiting after the cutscene
             //(Since this barrel unloads when you enter the whirlpool cave, unlike the DFbarrelcreator's ones)
             {
-                DFBarrel_Setup* seqBarrel = GET_MAPS_OBJECT(discoveryFalls, 0x00002115);
+                DFBarrel_Setup_Dinomod* seqBarrel = GET_MAPS_OBJECT(discoveryFalls, 0x00002115);
                 
                 //Remove from objGroup, since it can unload out of Krystal's hands if you carry it into the whirlpool cave
                 seqBarrel->base.loadFlags = OBJSETUP_LOAD_MAIN; 
@@ -5873,7 +5974,7 @@ static void discovery_falls_modifications(void) {
                 //Add TexScroll2 for the top of the waterfall
                 //(the faces just inside the rapids' Block didn't have a local TexScroll2 of their own)
                 {
-                    TexScroll2_Setup scroll = {
+                    TexScroll_Setup scroll = {
                         .base = {
                             .objId = OBJ_texscroll2,
                             .loadFlags = OBJSETUP_LOAD_CAMERA,
@@ -5892,7 +5993,7 @@ static void discovery_falls_modifications(void) {
 
                 //Adjust the rapids waterfall's TexScroll2 so it loads from further away
                 {
-                    TexScroll2_Setup* rapids = GET_MAPS_OBJECT(discoveryFalls, 0x0031e55);
+                    TexScroll_Setup* rapids = GET_MAPS_OBJECT(discoveryFalls, 0x0031e55);
                     rapids->base.loadFlags = OBJSETUP_LOAD_CAMERA;
                     rapids->base.loadDistance = FADE_DISTANCE(640 * 2);
                     rapids->blendTextureIndex = -1; //Clear reference to old water texture (from earlier art pass maybe?)
@@ -5901,7 +6002,7 @@ static void discovery_falls_modifications(void) {
                 //Adjust the rapids waterfall's TexScroll2 so it loads from further away
                 //(needs to be seen from as far as the Whirlpool Cave's "window")
                 {
-                    TexScroll2_Setup* rapidsWaterfall = GET_MAPS_OBJECT(discoveryFalls, 0x00031e50);
+                    TexScroll_Setup* rapidsWaterfall = GET_MAPS_OBJECT(discoveryFalls, 0x00031e50);
                     rapidsWaterfall->base.loadFlags = OBJSETUP_LOAD_CAMERA;
                     rapidsWaterfall->base.loadDistance = FADE_DISTANCE(640 * 2);
                     rapidsWaterfall->blendTextureIndex = -1; //Clear reference to old water texture (from earlier art pass maybe?)
@@ -5961,7 +6062,7 @@ static void discovery_falls_modifications(void) {
     {
         //Move Whirlpool Cave waterfall's texscroll into the Shrine exterior objGroup
         {
-            TexScroll2_Setup* texScroll = GET_MAPS_OBJECT(discoveryFalls, 0x00031f07);
+            TexScroll_Setup* texScroll = GET_MAPS_OBJECT(discoveryFalls, 0x00031f07);
             texScroll->base.loadFlags = OBJSETUP_LOAD_IN_MAP_OBJGROUP;
             texScroll->base.mapObjGroup = DF_ObjGroup3_Shrine_Exterior;
         }
@@ -7071,10 +7172,10 @@ static void nw_modifications(void) {
         NWMultiSeq_Setup* multiseq = reasset_map_objects_get(nw, reasset_base_id(0x32D52), NULL);
         // Set bit/seq indices to -1 (instead of 0) so the cutscene won't replay
         // the first seq is bit 0 is set (there's only 6 seqs for this cutscene).
-        multiseq->unk28[6] = -1;
-        multiseq->unk28[7] = -1;
-        multiseq->unk40[6] = -1;
-        multiseq->unk40[7] = -1;
+        multiseq->playBits[6] = -1;
+        multiseq->playBits[7] = -1;
+        multiseq->seqIndices[6] = -1;
+        multiseq->seqIndices[7] = -1;
     }
 
     // Change the bit the blue SnowHorn hit animator looks for (this is a custom dinomod map obj). We're giving it
@@ -7090,7 +7191,7 @@ static void gpsh_modifications(void) {
 
     // Set warp ID for completing the Test of Knowledge (and generally just fix the WarpPoint)
     {
-        WarpPoint_Setup* completionWarp = reasset_map_objects_get(gpsh, reasset_base_id(0x2C8D), NULL);
+        Warp_Setup* completionWarp = reasset_map_objects_get(gpsh, reasset_base_id(0x2C8D), NULL);
         completionWarp->base.objId = OBJ_WarpPoint; // WM_WarpPoint -> WarpPoint (same DLL, but the other shrines use WarpPoint)
         completionWarp->warpID = 31; // go to GP -> GPSH transporter
         completionWarp->isInboundWarp = FALSE; // this is an exit warp (why is this 1 normally?? you never warp to here?)
@@ -7180,7 +7281,7 @@ static void mmsh_modifications(void) {
 
     // Fix transporter so the player can leave
     {
-        Transporter_Setup* transporter = reasset_map_objects_get(mmsh, reasset_base_id(0xC5D), NULL);
+        Warp_Setup* transporter = reasset_map_objects_get(mmsh, reasset_base_id(0xC5D), NULL);
         transporter->gamebit = NO_GAMEBIT; // 0 -> -1 (so it's always enabled)
         transporter->warpID = 73; // 77 -> 73 (MMP shrine transporter)
     }
@@ -7191,7 +7292,7 @@ static void ecsh_modifications(void) {
 
     // Fix transporter so the player can leave
     {
-        Transporter_Setup* transporter = reasset_map_objects_get(ecsh, reasset_base_id(0xC5D), NULL);
+        Warp_Setup* transporter = reasset_map_objects_get(ecsh, reasset_base_id(0xC5D), NULL);
         transporter->gamebit = NO_GAMEBIT; // 0 -> -1 (so it's always enabled)
     }
 }
@@ -7214,7 +7315,7 @@ static void ccsh_modifications(void) {
 
     // Fix transporter so the player can leave
     {
-        Transporter_Setup* transporter = reasset_map_objects_get(ccsh, reasset_base_id(0xC5D), NULL);
+        Warp_Setup* transporter = reasset_map_objects_get(ccsh, reasset_base_id(0xC5D), NULL);
         transporter->gamebit = NO_GAMEBIT; // 0 -> -1 (so it's always enabled)
     }
 }
@@ -7237,7 +7338,7 @@ static void wgsh_modifications(void) {
 
     // Fix transporter so the player can leave
     {
-        Transporter_Setup* transporter = reasset_map_objects_get(wgsh, reasset_base_id(0xC5D), NULL);
+        Warp_Setup* transporter = reasset_map_objects_get(wgsh, reasset_base_id(0xC5D), NULL);
         transporter->gamebit = NO_GAMEBIT; // 0 -> -1 (so it's always enabled)
     }
 }
@@ -7247,7 +7348,7 @@ static void nwsh_modifications(void) {
 
     // Fix transporter so the player can leave
     {
-        Transporter_Setup* transporter = reasset_map_objects_get(nwsh, reasset_base_id(0xC5D), NULL);
+        Warp_Setup* transporter = reasset_map_objects_get(nwsh, reasset_base_id(0xC5D), NULL);
         transporter->gamebit = 0x129; // 0 -> 0x129 (so it's enabled while the test isn't active)
     }
 }
@@ -7994,6 +8095,24 @@ static void inside_galleon_modifications(void) {
     }
 }
 
+static void blackwater_canyon_modifications(void) {
+    //Update the ShadowHunter model to use rustyspottedcat's custom textures
+    {
+        /*  
+            Model and Tex1 changes:
+            TEX1/3665 is now used by the eyelid material
+            TEX1/3666 is left as a placeholder for a future pupil material
+            TEX1/3667 is now used by the back-of-head material
+            TEX1/3668 is now used by the tail material
+            TEX1/3669 is now used by the thigh material
+
+            Thigh vertices' UVs have been updated to account for the change in texture dimensions (44x44 -> 32x64)
+            Eyelid vertices' UVs have been updated to account for the change in texture dimensions (64x32 -> 32x64)
+        */
+        MODELS_REPLACE_BASE(136, models_shadowhunter);
+    }
+}
+
 REASSET_ON_SET_LOW_PRIORITY void dinomod_reasset_on_set(void) {
     custom_objects();
     custom_dlls();
@@ -8083,6 +8202,7 @@ REASSET_ON_MODIFY_LOW_PRIORITY void dinomod_reasset_on_modify(void) {
     // golden_plains_fuel_modifications();
     walled_city_modifications();
     add_wctrex_hit_spheres();
+    blackwater_canyon_modifications();
     dragon_rock_upper_modifications();
     dragon_rock_bottom_modifications();
     dfsh_modifications();

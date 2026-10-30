@@ -7,7 +7,6 @@
 #include "PR/os.h"
 #include "common.h"
 #include "dll.h"
-#include "dlls/objects/common/collectable.h"
 #include "dlls/objects/common/foodbag.h"
 #include "dlls/objects/210_player.h"
 #include "dlls/objects/272_collectable.h"
@@ -15,6 +14,7 @@
 #include "game/gametexts_ui.h"
 #include "game/objects/object_id.h"
 #include "game/objects/interaction_arrow.h"
+#include "game/objects/setups/6_Collectable.h"
 #include "macros.h"
 #include "sys/gfx/animseq.h"
 #include "sys/main.h"
@@ -46,7 +46,7 @@ typedef struct {
     f32 interactionRadius;
     f32 timerDestroy;           //Countdown after receiving collection message from sender
     s8 sidekickArgBase;         //Base arg value used for sidekick-related collectables
-    u8 objHitsValue;
+    u8 unk11;
     u8 unused12;
     u8 pause;                   //Control function ends early when this is set
     s16 gamebitCollected;       //Set when collected: collectable vanishes when set
@@ -374,9 +374,9 @@ RECOMP_PATCH void collectable_setup(Object* self, Collectable_Setup* objSetup, s
     objAddObjectType(self, OBJTYPE_Collectable);
     objInitMesgQueue(self, 2);
 
-    self->srt.yaw = objSetup->yaw << 8;
-    self->srt.pitch = objSetup->pitch << 8;
-    self->srt.roll = objSetup->roll << 8;
+    self->srt.yaw = objSetup->yaw8 << 8;
+    self->srt.pitch = objSetup->pitch8 << 8;
+    self->srt.roll = objSetup->roll8 << 8;
     self->srt.scale = self->def->scale;
 
     self->animCallback = (void*)&collectable_anim_callback;
@@ -384,8 +384,8 @@ RECOMP_PATCH void collectable_setup(Object* self, Collectable_Setup* objSetup, s
     self->stateFlags |= OBJSTATE_UPDATE_DISABLED;
 
     objData->sidekickArgBase = objSetup->messageArgBase;
-    objData->objHitsValue = objSetup->objHitsValue;
-    objData->pause = FALSE;
+    objData->unk11 = objSetup->scale;
+    objData->pause = 0;
     objData->areaValue = -2;
     objData->moving = 0;
     objData->delayCollect = 60;
@@ -445,31 +445,31 @@ RECOMP_PATCH void collectable_setup(Object* self, Collectable_Setup* objSetup, s
 
     //Setup light effects (TODO: update with cleaner match when available)
     if (self->def->unk87 & 0x10) {
-        lfxAction.unk12 = 25;
-        lfxAction.unke = 0;
-        lfxAction.unk15 = 0;
-        lfxAction.unk16 = 0;
-        lfxAction.unk17 = 0;
-        lfxAction.unk18 = *(u8*)((u32)self->def + 0x89); 
-        lfxAction.unk19 = *(u8*)((u32)self->def + 0x8A);
-        lfxAction.unk1a = *(u8*)((u32)self->def + 0x8B);
-        lfxAction.unk10 = 0xFFFE;
-        lfxAction.unk1b = 0;
+        lfxAction.flags = 25;
+        lfxAction.id = 0;
+        lfxAction.r1 = 0;
+        lfxAction.g1 = 0;
+        lfxAction.b1 = 0;
+        lfxAction.r2 = *(u8*)((u32)self->def + 0x89); 
+        lfxAction.g2 = *(u8*)((u32)self->def + 0x8A);
+        lfxAction.b2 = *(u8*)((u32)self->def + 0x8B);
+        lfxAction.slot = 0xFFFE;
+        lfxAction.type = LACTION_TYPE_NEWLFX;
         lfxAction.unk1c = 0;
-        lfxAction.unk0 = 0;
+        lfxAction.timer = 0;
         lfxAction.unk2 = 0;
-        lfxAction.unk8 = 0;
-        lfxAction.unk6 = 0;
-        lfxAction.unk4 = 0;
+        lfxAction.z = 0;
+        lfxAction.y = 0;
+        lfxAction.x = 0;
         lfxAction.unka = 0x54;
         lfxAction.unkC = 0x25;
-        lfxAction.unk1d = 0xFF;
-        lfxAction.unk1e = 0;
-        lfxAction.unk1f = self->def->lightIdx;
-        lfxAction.unk20 = self->def->nLights;
+        lfxAction.max = 255;
+        lfxAction.min = 0;
+        lfxAction.maxRange = self->def->lightIdx;
+        lfxAction.minRange = self->def->nLights;
         lfxAction.unk21 = 0;
-        gDLL_11_Newlfx->vtbl->DoAction(self, self, &lfxAction, 0, 0, 0);
-        self->unkD6 = lfxAction.unk10;
+        dll_newlfx->DoAction(self, self, &lfxAction, 0, 0, 0);
+        self->unkD6 = lfxAction.slot;
     }
 
     //Setup shadow
@@ -898,11 +898,11 @@ RECOMP_PATCH void collectable_collect(Object* self) {
     self->srt.scale = objdef->scale;
     self->unkDC = 1;
     if (objdef->unk87 & 0x10) {
-        lfxAction.unk12 = 2;
-        lfxAction.unke = 0;
-        lfxAction.unk1b = 0;
-        lfxAction.unk10 = self->unkD6;
-        gDLL_11_Newlfx->vtbl->DoAction(self, self, &lfxAction, 0, 0, 0);
+        lfxAction.flags = 2;
+        lfxAction.id = 0;
+        lfxAction.type = LACTION_TYPE_NEWLFX;
+        lfxAction.slot = self->unkD6;
+        dll_newlfx->DoAction(self, self, &lfxAction, 0, 0, 0);
     }
 }
 
