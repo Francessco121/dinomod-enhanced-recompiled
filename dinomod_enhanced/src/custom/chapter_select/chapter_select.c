@@ -109,15 +109,15 @@ static void init_save(Savegame* savegame, const char* filename) {
         savegame->file.sidekicks[i].blueFood = 4;
         savegame->file.sidekicks[i].redFood = 5;
 
-        savegame->map.lightActions[i].unk0[0] = -1;
-        savegame->map.lightActions[i].unk0[1] = -1;
-        savegame->map.lightActions[i].unk4 = -1;
-        savegame->map.lightActions[i].unk6 = -1;
-        savegame->map.lightActions[i].unk8[0] = -1;
-        savegame->map.lightActions[i].unk8[1] = -1;
-        savegame->map.lightActions[i].unkC[0] = -1;
-        savegame->map.lightActions[i].unkC[1] = -1;
-        savegame->map.lightActions[i].unk12 = -1;
+        savegame->map.lightActions[i].skylights[0] = -1;
+        savegame->map.lightActions[i].skylights[1] = -1;
+        savegame->map.lightActions[i].skylights[2] = -1;
+        savegame->map.lightActions[i].skylights[3] = -1;
+        savegame->map.lightActions[i].trklights[0] = -1;
+        savegame->map.lightActions[i].trklights[1] = -1;
+        savegame->map.lightActions[i].unkC = -1;
+        savegame->map.lightActions[i].newlfx = -1;
+        savegame->map.lightActions[i].cam = -1;
 
         savegame->map.envActions[i].unk0 = 43000.0f;
         savegame->map.envActions[i].unk4 = -1;

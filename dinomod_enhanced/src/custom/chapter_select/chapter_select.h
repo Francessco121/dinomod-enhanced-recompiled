@@ -2,7 +2,7 @@
 
 #include "dlls/engine/29_gplay.h"
 
-#define DEFAULT_LACTIONS { { -1, -1 }, -1, -1, { -1, -1 }, { -1, -1 }, 0, -1 }
+#define DEFAULT_LACTIONS { { -1, -1, -1, -1}, { -1, -1 }, -1, -1, 0, -1 }
 #define DEFAULT_ENVACTIONS { 43000.0f,  -1, -1, -1,  -1, -1, -1,  0, 0, 0,  0, 0, 0,  0, 0, 0,  {0},  1, -1, -1, -1 }
 
 enum ObjGroupStatusBits {

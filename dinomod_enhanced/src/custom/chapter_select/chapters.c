@@ -15,9 +15,9 @@ static void ch_ship_battle(void) { }
 static void ch_wl_1(void) {
     chselect_set_location(PLAYER_KRYSTAL, 13630.91f, 211.0f, -620.5f, M_180_DEGREES, 0);
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 120;
-    light.unk0[1] = 119;
-    light.unkC[1] = 93;
+    light.skylights[0] = 120;
+    light.skylights[1] = 119;
+    light.newlfx = 93;
     chselect_set_light(PLAYER_KRYSTAL, &light);
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
     env.unk4 = 165;
@@ -31,7 +31,7 @@ static void ch_wl_1(void) {
     env.unk1C = -13714; env.unk20 = 79; env.unk24 = -16441;
     env.unk28 = -14363; env.unk2C = 14; env.unk30 = -16480;
     chselect_set_env(PLAYER_KRYSTAL, &env);
-    chselect_set_music(PLAYER_KRYSTAL, 54, -1, 285, -1);
+    chselect_set_music(PLAYER_KRYSTAL, 54, -1, 285/*72*/, -1);
     chselect_set_map_state(MAP_WARLOCK_MOUNTAIN, 1, G1);
 
     // tutorials completed on the Galleon
@@ -78,9 +78,9 @@ static void ch_ice_mountain(void) {
     chselect_set_location(PLAYER_KRYSTAL, -1057.8f, 304.0f, 17436.0f, M_180_DEGREES, 0);
     {
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 485;
-        light.unk0[1] = 486;
-        light.unkC[1] = 128;
+        light.skylights[0] = 485;
+        light.skylights[1] = 486;
+        light.newlfx = 128;
         chselect_set_light(PLAYER_KRYSTAL, &light);
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
         env.unk4 = 79;
@@ -102,11 +102,11 @@ static void ch_ice_mountain(void) {
         chselect_set_map_state(MAP_ICE_MOUNTAIN_1, 1, G0 | G3 | G4 | G5 | G7);
         
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 347;
-        light.unk0[1] = 348;
-        light.unk4 = 380;
-        light.unk6 = 356;
-        light.unkC[1] = 379;
+        light.skylights[0] = 347;
+        light.skylights[1] = 348;
+        light.skylights[2] = 380;
+        light.skylights[3] = 356;
+        light.newlfx = 379;
         chselect_set_light(PLAYER_SABRE, &light);
         
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -151,12 +151,12 @@ static void ch_snowhorn_wastes_1(void) {
     chselect_set_location(PLAYER_SABRE, -2420.59f, -73.43f, 936.64f, M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 389;
-    light.unk0[1] = 390;
-    light.unk4 = 394;
-    light.unk6 = 356;
-    light.unkC[1] = 379;
-    light.unk12 = 1;
+    light.skylights[0] = 389;
+    light.skylights[1] = 390;
+    light.skylights[2] = 394;
+    light.skylights[3] = 356;
+    light.newlfx = 379;
+    light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -216,12 +216,12 @@ static void ch_swapstone_hollow_1(void) {
     chselect_set_location(PLAYER_SABRE, -6984.36f, -830.41f, -569.07f, M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 389;
-    light.unk0[1] = 390;
-    light.unk4 = 394;
-    light.unk6 = 356;
-    light.unkC[1] = 1;
-    light.unk12 = 61;
+    light.skylights[0] = 389;
+    light.skylights[1] = 390;
+    light.skylights[2] = 394;
+    light.skylights[3] = 356;
+    light.newlfx = 1;
+    light.cam = 61;
     chselect_set_light(PLAYER_SABRE, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -273,12 +273,12 @@ static void ch_swapstone_circle_1(void) {
 
     {
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 389;
-        light.unk0[1] = 401;
-        light.unk4 = 402;
-        light.unk6 = 403;
-        light.unkC[1] = 1;
-        light.unk12 = 1;
+        light.skylights[0] = 389;
+        light.skylights[1] = 401;
+        light.skylights[2] = 402;
+        light.skylights[3] = 403;
+        light.newlfx = 1;
+        light.cam = 1;
         chselect_set_light(PLAYER_SABRE, &light);
 
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -308,9 +308,9 @@ static void ch_swapstone_circle_1(void) {
 
     {
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 485;
-        light.unk0[1] = 486;
-        light.unkC[1] = 128;
+        light.skylights[0] = 485;
+        light.skylights[1] = 486;
+        light.newlfx = 128;
         chselect_set_light(PLAYER_KRYSTAL, &light);
 
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -337,9 +337,9 @@ static void ch_cape_claw_1(void) {
     chselect_set_location(PLAYER_KRYSTAL, 1403.51f, 158.35f, 16944.01f, -M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 485;
-    light.unk0[1] = 486;
-    light.unk12 = 1;
+    light.skylights[0] = 485;
+    light.skylights[1] = 486;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -391,9 +391,9 @@ static void ch_cape_claw_1_courtyard(void) {
     chselect_set_location(PLAYER_KRYSTAL, 4336.79f, -8.0f, 17994.89f, -M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 485;
-    light.unk0[1] = 498;
-    light.unk12 = 1;
+    light.skylights[0] = 485;
+    light.skylights[1] = 498;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -430,9 +430,9 @@ static void ch_lightfoot_village_1(void) {
     chselect_set_location(PLAYER_KRYSTAL, 1403.51f, 158.35f, 16944.01f, M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 485;
-    light.unk0[1] = 497;
-    light.unk12 = 1;
+    light.skylights[0] = 485;
+    light.skylights[1] = 497;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -458,9 +458,9 @@ static void ch_swapstone_circle_2(void) {
     chselect_set_location(PLAYER_KRYSTAL, -287.468f, 286.740f, 16947.609f, 17920, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 485;
-    light.unk0[1] = 486;
-    light.unk12 = 1;
+    light.skylights[0] = 485;
+    light.skylights[1] = 486;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -497,10 +497,10 @@ static void ch_discovery_falls(void) {
     chselect_set_location(PLAYER_KRYSTAL, -2097.08f, 160.27f, 18309.26f, 17408, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 485;
-    light.unk0[1] = 36;
-    light.unkC[1] = 90;
-    light.unk12 = 1;
+    light.skylights[0] = 485;
+    light.skylights[1] = 36;
+    light.newlfx = 90;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -582,12 +582,12 @@ static void ch_df_shrine(void) {
     // chselect_set_location(PLAYER_KRYSTAL, -4048.695313f, 218.0f, 16215.4375f, -8192, 0);
 
     // PlayerLightActions light = DEFAULT_LACTIONS;
-    // light.unk0[0] = 485;
-    // light.unk0[1] = 35;
-    // light.unk8[0] = 495;
-    // light.unkC[1] = 493;
-    // light.isInside = 1;
-    // light.unk12 = 1;
+    // light.skylights[0] = 485;
+    // light.skylights[1] = 35;
+    // light.trklights[0] = 495;
+    // light.newlfx = 493;
+    // light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
+    // light.cam = 1;
     // chselect_set_light(PLAYER_KRYSTAL, &light);
 
     // PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -606,12 +606,12 @@ static void ch_df_shrine(void) {
     chselect_set_location(PLAYER_KRYSTAL, 15847.602f, 56.0f, -16792.164f, 0, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 19;
-    light.unk0[1] = 18;
-    light.unk8[0] = 495;
-    light.unkC[1] = 63;
-    light.isInside = 1;
-    light.unk12 = 1;
+    light.skylights[0] = 19;
+    light.skylights[1] = 18;
+    light.trklights[0] = 495;
+    light.newlfx = 63;
+    light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -644,11 +644,11 @@ static void ch_warlock_mountain_spirit_1(void) {
     chselect_set_location(PLAYER_KRYSTAL, 13711.855469f, 210.710876f, 144.656250f, M_90_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 108;
-    light.unk0[1] = 119;
-    light.unk8[0] = 495;
-    light.unkC[1] = 90;
-    light.unk12 = 1;
+    light.skylights[0] = 108;
+    light.skylights[1] = 119;
+    light.trklights[0] = 495;
+    light.newlfx = 90;
+    light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -679,11 +679,11 @@ static void ch_swapstone_hollow_2(void) {
         chselect_set_location(PLAYER_KRYSTAL, -1048.82f, 307.0f, 17424.86f, 0, 0);
 
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 485;
-        light.unk0[1] = 486;
-        light.unk8[0] = 495;
-        light.unkC[1] = 2;
-        light.unk12 = 1;
+        light.skylights[0] = 485;
+        light.skylights[1] = 486;
+        light.trklights[0] = 495;
+        light.newlfx = 2;
+        light.cam = 1;
         chselect_set_light(PLAYER_KRYSTAL, &light);
 
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -712,12 +712,12 @@ static void ch_swapstone_hollow_2(void) {
         chselect_set_location(PLAYER_SABRE, -6571.54f, -632.0f, -1607.57f, 0, 0);
 
         PlayerLightActions light = DEFAULT_LACTIONS;
-        light.unk0[0] = 389;
-        light.unk0[1] = 401;
-        light.unk4 = 402;
-        light.unk6 = 403;
-        light.unkC[1] = 1;
-        light.unk12 = 1;
+        light.skylights[0] = 389;
+        light.skylights[1] = 401;
+        light.skylights[2] = 402;
+        light.skylights[3] = 403;
+        light.newlfx = 1;
+        light.cam = 1;
         chselect_set_light(PLAYER_SABRE, &light);
 
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -754,12 +754,12 @@ static void ch_darkice_1(void) {
     chselect_set_location(PLAYER_SABRE, -6808.006348f, -1202.555176f, 1838.698242f, M_180_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 389;
-    light.unk0[1] = 390;
-    light.unk4 = 394;
-    light.unk6 = 403;
-    light.unkC[1] = 204;
-    light.unk12 = 1;
+    light.skylights[0] = 389;
+    light.skylights[1] = 390;
+    light.skylights[2] = 394;
+    light.skylights[3] = 403;
+    light.newlfx = 204;
+    light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -852,12 +852,12 @@ static void ch_darkice_2(void) {
     chselect_set_location(PLAYER_SABRE, -9106.515f, -909.450f, 6638.054f, M_180_DEGREES, 0);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 160;
-    light.unk0[1] = 430;
-    light.unk4 = 433;
-    light.unk6 = 403;
-    light.unkC[1] = 223;
-    light.unk12 = 1;
+    light.skylights[0] = 160;
+    light.skylights[1] = 430;
+    light.skylights[2] = 433;
+    light.skylights[3] = 403;
+    light.newlfx = 223;
+    light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -938,12 +938,12 @@ static void ch_galadon(void) {
     chselect_set_location(PLAYER_SABRE, -7474.890, -2974.000, 7299.699, M_180_DEGREES, -2);
 
     PlayerLightActions light = DEFAULT_LACTIONS;
-    light.unk0[0] = 220;
-    light.unk0[1] = 241;
-    light.unk4 = 322;
-    light.unk6 = 274;
-    light.isInside = 1;
-    light.unk12 = 74;
+    light.skylights[0] = 220;
+    light.skylights[1] = 241;
+    light.skylights[2] = 322;
+    light.skylights[3] = 274;
+    light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
+    light.cam = 74;
     chselect_set_light(PLAYER_SABRE, &light);
 
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
