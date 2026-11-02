@@ -220,6 +220,7 @@ INCBIN(models_wcmoontemplelift,   "inc/models_0958_WCMoonTempleLift.bin");
 INCBIN(models_wcsuntempleswitch,  "inc/models_0964_WCSunTempleSwitch.bin");
 INCBIN(models_dfpt_lift1,         "inc/models_0364_DFPLift1.bin");
 INCBIN(models_shadowhunter,       "inc/models_0136_ShadowHunter_repaired.bin");
+INCBIN(models_lightfoot_chief,    "inc/models_0202_LightFoot_Chief_repaired.bin");
 
 #define BLOCKS_REPLACE_BASE(trkblk, trkblkBaseID, blockID, file) (reasset_blocks_set(trkblk, reasset_base_id(blockID - trkblkBaseID), REASSET_BASE_NAMESPACE, file, file##_end  - file))
 #define MODELS_REPLACE_BASE(modelID, file) (reasset_models_set(reasset_base_id(modelID), REASSET_BASE_NAMESPACE, file, file##_end  - file))
@@ -3844,14 +3845,12 @@ static void swapstone_hollow_well_modifications(void) {
             line = reasset_hits_get(shWellTrkblk, blockIDLilyPondClimb, hitsVineTopEdge1);
             line->settingsA = 0;
             line->settingsB = TrackLine_SETTINGB_Nonsolid | HITS_Precipice;
-            reasset_hits_set(shWellTrkblk, blockIDLilyPondClimb, hitsVineTopEdge1, REASSET_BASE_NAMESPACE, &line);
             
             //Line 51
             ReAssetID hitsVineTopEdge2 = reasset_base_id(51);
             line = reasset_hits_get(shWellTrkblk, blockIDLilyPondClimb, hitsVineTopEdge2);
             line->settingsA = 0;
             line->settingsB = TrackLine_SETTINGB_Nonsolid | HITS_Precipice;
-            reasset_hits_set(shWellTrkblk, blockIDLilyPondClimb, hitsVineTopEdge2, REASSET_BASE_NAMESPACE, &line);
         }
 
         //Add HITS lines so you can jump from the central island in the stalactite cave
@@ -4458,6 +4457,14 @@ static void swapstone_circle_modifications(void) {
                 reasset_auto_id(dinomodNs), scroll, sizeof(TexScroll_Setup)
             );
         }
+    }
+
+    //Fix unnecessary hidden polygons in the LightFoot Chief's model data
+    //(There was a buggy extra triangle inside his jaw that was being drawn 10 times)
+    {
+        //Commented out for now, because the hidden polygons are kind of an entertaining obscure detail, 
+        //plus they no longer cause problems anyway with the stale object shadow DL bug fixed!
+        //MODELS_REPLACE_BASE(202, models_lightfoot_chief);
     }
 }
 
