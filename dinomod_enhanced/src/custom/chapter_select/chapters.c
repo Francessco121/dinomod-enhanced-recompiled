@@ -5,6 +5,8 @@
 #include "sys/math.h"
 #include "macros.h"
 
+#include "custom_gamebits.h"
+
 #include "chapter_select.h"
 
 static void ch_stub(void) { }
@@ -982,30 +984,780 @@ static void ch_galadon(void) {
     chselect_set_music(PLAYER_SABRE, /*93*/ 281, -1, 135, -1);
 }
 
-static void ch_crf_start(void) {
-    //set_map(MAP_CLOUDRUNNER_FORTRESS, 0, PLAYER_KRYSTAL);
+static void ch_swapstone_hollow_river(void) {
+    /* boss galadon */
+    mainSetBits(BIT_SpellStone_DIM, 1);
+    mainSetBits(BIT_210, 1);
 
-    // TODO: move
-    chselect_set_min_magic(PLAYER_KRYSTAL, 15);
-    mainSetBits(BIT_Spell_Forcefield, 1);
-    mainSetBits(BIT_Krystal_Foodbag_L, 1);
-    mainSetBits(BIT_CC_Rescued_Kyte, 1);
+    /* dim1/snowhorn wastes (trek back) */
+    mainSetBits(BIT_Garunda_Te_Quest_Progress, 7);
+    mainSetBits(BIT_186, 273); // ? map objbits?
+    mainSetBits(BIT_SpellStone_DIM_Activated, 1);
+    mainSetBits(BIT_22E, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 145);
+
+    /* snowhown wastes -> swapstone hollow tunnel */
+    chselect_set_map_state(MAP_SNOWHORN_WASTES, 2, G19);
+    chselect_set_map_state(MAP_DARK_ICE_MINES_2, 0, G_None); // why act 0?
+    chselect_set_map_state(MAP_BOSS_GALADON, 1, G_None);
+
+    chselect_set_location(PLAYER_SABRE, -6984.36f, -800.41f, -569.07f, M_90_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 389;
+    light.skylights[1] = 390;
+    light.skylights[2] = 394;
+    light.skylights[3] = 274;
+    light.trklights[0] = 392;
+    light.trklights[1] = 443;
+    light.newlfx = 203;
+    light.cam = 61;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 180;
+    env.unk6 = 182;
+    env.unk8 = 181;
+    env.unkA = 100;
+    env.unkC = 300;
+    env.unk10 = -7184; env.unk14 = -1180; env.unk18 = 2851;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 281, -1, 65, -1);
+}
+
+static void ch_diamond_bay_1(void) {
+    /* swapstone hollow */
+    mainSetBits(BIT_14, 1); // SHseqobject 0x1CEB played bit
+    mainSetBits(BIT_Tricky_Talk_Sequence, 56);
+    mainSetBits(DINOMOD_BIT_920_SH_BoulderBlownUp, 1);
+    mainSetBits(DINOMOD_BIT_921_SH_RiverUnblocked, 1);
+    mainSetBits(DINOMOD_BIT_92C_SH_River_Seq_Has_Played, 1);
+
+    /* before log to diamond bay */
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G7 | G8 | G11 | G12);
+
+    chselect_set_location(PLAYER_SABRE, -6746.6f, -804.093f, -2728.939f, 0x2F00, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 389;
+    light.skylights[1] = 401;
+    light.skylights[2] = 402;
+    light.skylights[3] = 403;
+    light.trklights[0] = 392;
+    light.trklights[1] = 443;
+    light.newlfx = 2;
+    light.cam = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 97;
+    env.unk6 = 95;
+    env.unk8 = 96;
+    env.unkA = 100;
+    env.unkC = 300;
+    env.unk10 = -7184; env.unk14 = -1180; env.unk18 = 2851;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 281, -1, 1, -1);
+}
+
+static void ch_volcano_force_point_1(void) {
+    /* diamond bay */
+    mainSetBits(BIT_186, 0); // ?? map objbits?
+    mainSetBits(BIT_39B, 1); // ClubSharpClaw 0x300BF defeated
+    mainSetBits(BIT_DB_Gave_Pointback_Egg_One, 1);
+    mainSetBits(BIT_3A4, 1);
+    mainSetBits(BIT_3A5, 1);
+    mainSetBits(BIT_3A6, 1);
+    mainSetBits(BIT_3A7, 1);
+    mainSetBits(BIT_3C0, 1);
+    mainSetBits(BIT_DB_Picked_Up_Egg, 1);
+    mainSetBits(BIT_406, 1);
+    mainSetBits(BIT_407, 1);
+    mainSetBits(BIT_408, 1);
+    mainSetBits(BIT_DB_Tricky_Drained_Pool_One, 1);
+    mainSetBits(BIT_DB_Tricky_Drained_Pool_Two, 1);
+    mainSetBits(BIT_DB_Tricky_Drained_Pool_Three, 1);
+    mainSetBits(BIT_411, 1);
+    mainSetBits(BIT_DB_Egg_Flood_Level_One, 1);
+    mainSetBits(BIT_DB_Egg_Flood_Level_Two, 1);
+    mainSetBits(BIT_DB_Egg_Flood_Level_Three, 1);
+    mainSetBits(BIT_44B, 1);
+    mainSetBits(BIT_44C, 1);
+    mainSetBits(BIT_44D, 1);
+    mainSetBits(BIT_4B4, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 210);
+    mainSetBits(BIT_4E6, 1);
+    mainSetBits(BIT_83F, 1);
+    mainSetBits(BIT_DB_Bay_Diamond, 1);
+    mainSetBits(BIT_8A6, 1);
+    mainSetBits(BIT_8AF, 1);
+    mainSetBits(BIT_8EB, 1);
+
+    /* volcano force point entrance (bridge) */
+    chselect_set_map_state(MAP_DIAMOND_BAY, 1, G6 | G11);
+    chselect_set_map_state(MAP_VOLCANO_FORCE_POINT_TEMPLE, 11, G_None); // still act 11 from the queen's cutscene?
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G6 | G8 | G11 | G12);
+
+    chselect_set_location(PLAYER_SABRE, -12298.08f, -1447.0f, -2237.22f, M_90_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 389;
+    light.skylights[1] = 618;
+    light.skylights[2] = 619;
+    light.skylights[3] = 403;
+    light.trklights[0] = 616;
+    light.trklights[1] = 443;
+    light.cam = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 487;
+    env.unk6 = 488;
+    env.unk8 = 489;
+    env.unkA = 100;
+    env.unkC = 300;
+    env.unk10 = -7184; env.unk14 = -1180; env.unk18 = 2851;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 208, -1, 195, -1);
+}
+
+static void ch_db_shrine(void) {
+    /* volcano force point/killbot area */
+    mainSetBits(BIT_SpellStone_DIM, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 122);
+    mainSetBits(BIT_4E7, 1);
+    mainSetBits(BIT_DB_Unlock_Act_Two, 1);
+    mainSetBits(BIT_4EC, 1);
+    mainSetBits(BIT_4ED, 1);
+    mainSetBits(BIT_4EE, 1);
+    mainSetBits(BIT_4FD, 1);
+    mainSetBits(BIT_503, 1);
+    mainSetBits(BIT_504, 1);
+    mainSetBits(BIT_506, 1);
+    mainSetBits(BIT_507, 1);
+    mainSetBits(BIT_508, 1);
+    mainSetBits(BIT_509, 1);
+    mainSetBits(BIT_50A, 1);
+    mainSetBits(BIT_512, 1);
+    mainSetBits(BIT_513, 1);
+    mainSetBits(BIT_VFP_Door_Seal_Break, 1);
+    mainSetBits(BIT_51D, 1);
+    mainSetBits(BIT_521, 1);
+    mainSetBits(BIT_VFP_Flamethrower_Turned_Off_2, 1);
+    mainSetBits(BIT_523, 1);
+    mainSetBits(BIT_541, 1);
+    mainSetBits(BIT_84F, 1);
+    mainSetBits(BIT_86B, 1);
+    mainSetBits(BIT_870, 1);
+    mainSetBits(BIT_871, 1);
+    mainSetBits(BIT_877, 1);
+    mainSetBits(BIT_87D, 1);
+    mainSetBits(BIT_87E, 1);
+    mainSetBits(BIT_87F, 1);
+    mainSetBits(BIT_8B6, 1);
+    mainSetBits(BIT_8B7, 1);
+    mainSetBits(BIT_8F0, 1);
+    mainSetBits(BIT_VFP_Flamethrower_Turned_Off, 1);
+
+    chselect_set_map_state(MAP_DIAMOND_BAY, 2, G3 | G11);
+    chselect_set_map_state(MAP_VOLCANO_FORCE_POINT_TEMPLE, 1, G_None);
+
+    /* warp */
+    chselect_set_map_state(MAP_SHRINE_DIAMOND_BAY, 0, G1);
+
+    chselect_set_location(PLAYER_SABRE, 12007.602f, 56.0f, -16792.164f, 0x1800, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 232;
+    light.skylights[1] = 233;
+    light.skylights[2] = 359;
+    light.skylights[3] = 374;
+    light.trklights[0] = 616;
+    light.trklights[1] = 443;
+    light.newlfx = 413;
+    light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
+    light.cam = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 154;
+    env.unk6 = 325;
+    env.unk8 = 212;
+    env.unkA = 100;
+    env.unkC = 300;
+    env.unk10 = -7184; env.unk14 = -1180; env.unk18 = 2851;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 41, -1, 163, -1);
+}
+
+// DB spirit
+static void ch_warlock_mountain_spirit_2(void) {
+    /* DB shrine */
+    mainSetBits(BIT_21F_Spirit_Collected, 1);
+    mainSetBits(BIT_Spirit_Bits, (2 << 0));
+
+    chselect_set_map_state(MAP_WARLOCK_MOUNTAIN, 3, G_None);
+    chselect_set_map_state(MAP_SHRINE_DIAMOND_BAY, 0, G_None);
+
+    /* diamond bay -> swapstone hollow */
+    mainSetBits(BIT_21F_Spirit_Collected, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 201);
+    mainSetBits(BIT_86F, 1);
+    mainSetBits(BIT_872, 1);
+    mainSetBits(BIT_873, 1);
+    mainSetBits(BIT_Play_Seq_035F_Rocky_Intro, 1);
+    mainSetBits(BIT_Talking_to_Rocky, 1);
+
+    chselect_set_map_state(MAP_DIAMOND_BAY, 2, G_None);
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G0);
+
+    /* warp */
+    chselect_set_map_state(MAP_SNOWHORN_WASTES, 1, G19); // reset act from swapstone?
+    chselect_set_map_state(MAP_ICE_MOUNTAIN_1, 1, G_None); // reset act from swapstone?
+
+    chselect_set_location(PLAYER_SABRE, 12384.348f, -289.000f, 2953.051f, -M_90_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 232;
+    light.skylights[1] = 632;
+    light.skylights[2] = 402;
+    light.skylights[3] = 374;
+    light.trklights[0] = 629;
+    light.trklights[1] = 443;
+    light.newlfx = 1;
+    light.cam = 1;
+    chselect_set_light(PLAYER_SABRE, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 229;
+    env.unk6 = 228;
+    env.unk8 = 96;
+    env.unkA = 100;
+    env.unkC = 300;
+    env.unk10 = -7184; env.unk14 = -1180; env.unk18 = 2851;
+    env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+    chselect_set_env(PLAYER_SABRE, &env);
+
+    chselect_set_music(PLAYER_SABRE, 41, -1, 271, -1);
+}
+
+// CRF start
+static void ch_swapstone_circle_3(void) {
+    /* warlock mountain (sabre, spirit 2) */
+    mainSetBits(BIT_29A, 1);
+    mainSetBits(BIT_29B, 1);
+    mainSetBits(BIT_2A7, 1);
+    mainSetBits(BIT_2A8, 1);
+    mainSetBits(BIT_2A9, 1);
+    mainSetBits(BIT_2B2, 0);
+    mainSetBits(BIT_Spirit_2_Release_Sabre, 1);
+    mainSetBits(BIT_Play_Seq_0107_Rocky_Intro_Unused, 0);
+    mainSetBits(BIT_Spirit_Bits, 0);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 35);
+    mainSetBits(BIT_WM_Sabre_Transporter_Visible, 1);
+    mainSetBits(BIT_Sabre_Warp_Crystal, 1);
+    mainSetBits(BIT_8A1, 1);
+    mainSetBits(BIT_8A3, 1);
+
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G_None);
+
+    /* final sabre state */
+    {
+        chselect_set_location(PLAYER_SABRE, -6571.54, -632.0f, -1607.57f, 0, 0);
+
+        PlayerLightActions light = DEFAULT_LACTIONS;
+        light.skylights[0] = 232;
+        light.skylights[1] = 401;
+        light.skylights[2] = 402;
+        light.skylights[3] = 374;
+        light.trklights[0] = 629;
+        light.trklights[1] = 443;
+        light.cam = 1;
+        chselect_set_light(PLAYER_SABRE, &light);
+
+        PlayerEnvActions env = DEFAULT_ENVACTIONS;
+        env.unk4 = 97;
+        env.unk6 = 95;
+        env.unk8 = 96;
+        env.unkA = 424;
+        env.unkC = 300;
+        env.unk10 = -6571; env.unk14 = -631; env.unk18 = -1526;
+        env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+        chselect_set_env(PLAYER_SABRE, &env);
+
+        chselect_set_music(PLAYER_SABRE, 41, -1, 5, -1);
+    }
+
+    /* swap */
+    chselect_set_player(PLAYER_KRYSTAL);
+    chselect_set_map_state(MAP_SWAPSTONE_CIRCLE, 9, G0);
+
+    {
+        chselect_set_location(PLAYER_KRYSTAL, -1048.82f, 307.0f, 17424.86f, 0, 0);
+
+        PlayerLightActions light = DEFAULT_LACTIONS;
+        light.skylights[0] = 485;
+        light.skylights[1] = 486;
+        light.trklights[0] = 484;
+        light.newlfx = 126;
+        light.cam = 1;
+        chselect_set_light(PLAYER_KRYSTAL, &light);
+
+        PlayerEnvActions env = DEFAULT_ENVACTIONS;
+        env.unk4 = 434;
+        env.unk6 = 435;
+        env.unk8 = 436;
+        env.unkA = 141;
+        env.unk10 = 13685; env.unk14 = 202; env.unk18 = -169;
+        chselect_set_env(PLAYER_KRYSTAL, &env);
+
+        chselect_set_music(PLAYER_KRYSTAL, 185, -1, 18, -1);
+    }
+}
+
+static void ch_crf_start(void) {
+    /* swapstone circle/mmp */
+    mainSetBits(BIT_186, 0); // ? mapobj bits?
+    mainSetBits(BIT_38A, 1);
+    mainSetBits(BIT_38B, 1);
+    mainSetBits(BIT_41C, 1);
+    mainSetBits(BIT_453, 1);
+    mainSetBits(BIT_Kyte_Flight_Curve, 160);
+    mainSetBits(BIT_60F, 1);
+    mainSetBits(BIT_CRF_Prison_Key_2, 1);
+    mainSetBits(BIT_Talking_to_Rocky, 0);
+    mainSetBits(BIT_8AA, 1);
+    mainSetBits(BIT_8AB, 1);
+    mainSetBits(BIT_8AC, 1);
+    mainSetBits(BIT_8C2, 1);
+    mainSetBits(DINOMOD_BIT_972_DF_Open_Door_to_MMP, 1);
+    mainSetBits(DINOMOD_BIT_975_DF_Kyte_Can_Fly_Through_Door_to_MMP, 1);
+
+    chselect_set_map_state(MAP_MOON_MOUNTAIN_PASS, 1, G1);
+    chselect_set_map_state(MAP_DISCOVERY_FALLS, 1, G19);
+    chselect_set_map_state(MAP_SWAPSTONE_CIRCLE, 9, G_None);
+
+    /* cloudrunner fortress entrance */
+    chselect_set_location(PLAYER_KRYSTAL, -8388.96f, 1109.62f, 18926.75f, 0x3C00, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 485;
+    light.skylights[1] = 476;
+    light.trklights[0] = 494;
+    light.cam = 1;
+    chselect_set_light(PLAYER_KRYSTAL, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 312;
+    env.unk6 = 314;
+    env.unk8 = 313;
+    env.unkA = 141;
+    env.unk10 = 13685; env.unk14 = 202; env.unk18 = -169;
+    chselect_set_env(PLAYER_KRYSTAL, &env);
+
+    chselect_set_music(PLAYER_KRYSTAL, 15, -1, 206, -1);
 }
 
 static void ch_crf_dungeon_start(void) {
-    //set_map(MAP_CLOUDRUNNER_DUNGEON, 0, PLAYER_KRYSTAL);
-    chselect_set_music(PLAYER_KRYSTAL, 204, -1, 3, -1);
-
+    /* cloudrunner fortress */
+    mainSetBits(BIT_Played_Seq_0041_Scales_Kills_The_Queen, 1);
     mainSetBits(BIT_Play_Seq_017C_CF_This_Is_CloudRunner_Fortress, 1);
     mainSetBits(BIT_Played_Seq_017C_CF_This_Is_CloudRunner_Fortress, 1);
-    mainSetBits(BIT_CF_Entrance_Trigger_Passed, 1); // load entrance stairwell
-
     mainSetBits(BIT_213, 1); // crf entrance stairwell seq play
     mainSetBits(BIT_214, 1); // crf entrance stairwell seq played
+    mainSetBits(BIT_356, 1);
+    mainSetBits(BIT_Kyte_Trapped, 1);
+    mainSetBits(BIT_Kyte_Flight_Curve, 17);
+    mainSetBits(BIT_CF_Entrance_Trigger_Passed, 1); // load entrance stairwell
+    mainSetBits(BIT_580, 1); // TriggerPoint 0x32253 restore bit
+    mainSetBits(BIT_584, 1); // ClubSharpClaw 0x322B0 defeated
 
-    mainSetBits(BIT_CRF_Scales_And_Queen_In_Courtyard, 0);
-    mainSetBits(BIT_Play_Seq_0041_Scales_Kills_The_Queen, 1);
-    mainSetBits(BIT_Played_Seq_0041_Scales_Kills_The_Queen, 1);
+    chselect_set_map_state(MAP_CLOUDRUNNER_FORTRESS, 1, G7);
+    chselect_set_map_state(MAP_CLOUDRUNNER_DUNGEON, 1, G3);
+
+    /* dungeon player cell */
+    chselect_set_location(PLAYER_KRYSTAL, -12055.83f, 1299.43f, 20132.37f, 0, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 506;
+    light.skylights[1] = 22;
+    light.trklights[0] = 494;
+    light.newlfx = 49;
+    // bug: should be inside light
+    light.cam = 37;
+    chselect_set_light(PLAYER_KRYSTAL, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 61;
+    env.unk6 = 62;
+    env.unk8 = 63;
+    env.unkA = 70;
+    env.unkC = 67;
+    env.unkE = 92;
+    env.unk10 = -10703; env.unk14 = 1716; env.unk18 = 18241;
+    env.unk1C = -10884; env.unk20 = 1876; env.unk24 = 18921;
+    env.unk28 = -10448; env.unk2C = 1501; env.unk30 = 18255;
+    chselect_set_env(PLAYER_KRYSTAL, &env);
+
+    chselect_set_music(PLAYER_KRYSTAL, 295, -1, 3, -1);
+}
+
+static void ch_crf_race(void) {
+    /* cloudrunner dungeon */
+    chselect_move_setup(0xA69, MAP_CLOUDRUNNER_DUNGEON, -11908.346680f, 1309.0f, 20109.648438f); // CFDungeonBlock
+
+    mainSetBits(BIT_Spell_Illusion, 1);
+    mainSetBits(BIT_CRF_Prison_Key_1, 1);
+    mainSetBits(BIT_CRF_Prison_Guardian_Cell_Door_Unlocked, 1);
+    mainSetBits(BIT_CRF_BoneHead_Guardian_Freed, 1);
+    //mainSetBits(BIT_CFGuardian_State, 4);
+    mainSetBits(BIT_CRF_Prison_GreenScarab_Cage_Unlocked, 1);
+    mainSetBits(BIT_CRF_CloudRunner_Uncle_Freed, 1);
+    mainSetBits(BIT_CRF_Prison_RedScarab_Cage_Unlocked, 1);
+    mainSetBits(BIT_CRF_Prison_Duster_Cage_Unlocked, 1);
+    mainSetBits(BIT_CRF_CloudRunner_Uncle_Escaped, 1);
+    //mainSetBits(BIT_CRF_Power_Room_Key, 1);
+    mainSetBits(BIT_CRF_Prison_Guardian_Cell_Door_Open, 1);
+    mainSetBits(BIT_360, 1);
+    mainSetBits(BIT_583, 1);
+
+    /* restored power + rescued kyte */
+    mainSetBits(BIT_CF_Floor_Destroyed, 1);
+    //mainSetBits(BIT_CFGuardian_State, 8);
+    mainSetBits(BIT_CRF_Red_PowerBase, 1);
+    mainSetBits(BIT_CRF_Green_PowerBase, 1);
+    mainSetBits(BIT_CRF_Blue_PowerBase, 1);
+    mainSetBits(BIT_CRF_WindLifts_Powered, 1);
+    mainSetBits(BIT_CRF_Power_Room_Unlocked, 1);
+    //mainSetBits(BIT_CRF_Power_Room_Key, 0);
+    mainSetBits(BIT_186, 0); // ??????
+    mainSetBits(BIT_209, 1);
+    mainSetBits(BIT_CRF_BlastedRoof_Blasted, 1);
+    mainSetBits(BIT_302, 1);
+    mainSetBits(BIT_306, 1);
+    mainSetBits(BIT_307, 1);
+    mainSetBits(BIT_34B, 1);
+    mainSetBits(BIT_34C, 1);
+    mainSetBits(BIT_Play_Seq_01D7_CF_Kyte_Freed, 1);
+    mainSetBits(BIT_Played_Seq_01D7_CF_Kyte_Freed, 1);
+    mainSetBits(BIT_35A, 1);
+    mainSetBits(BIT_35C, 1);
+    mainSetBits(BIT_Kyte_Trapped, 0);
+    //mainSetBits(BIT_Kyte_Flight_Curve, 18);
+    mainSetBits(BIT_4DF, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 0); // wat ??
+    //mainSetBits(BIT_CRF_Player_In_Treasure_Room, 1); // also the throne room apparently
+    mainSetBits(BIT_8B2, 1);
+    mainSetBits(BIT_8B3, 1);
+    mainSetBits(BIT_8B4, 1);
+    mainSetBits(BIT_8B8, 1);
+    mainSetBits(BIT_8B9, 1);
+    mainSetBits(BIT_8BA, 1);
+    mainSetBits(BIT_8BB_Kyte_Distract_Command, 1);
+    mainSetBits(BIT_CRF_Courtyard_Drop_Ladder, 1);
+    mainSetBits(BIT_8C9, 1);
+    mainSetBits(BIT_8CA, 1);
+    mainSetBits(BIT_CRF_Prison_Guardian_Exited_WindLift, 1);
+    mainSetBits(BIT_8FD, 1);
+    mainSetBits(BIT_8FF, 1);
+    mainSetBits(BIT_CRF_BlastedRoof_Damage_Counter, 3);
+    mainSetBits(BIT_909, 1);
+
+    /* cfbaby rescue */
+    mainSetBits(BIT_CFGuardian_State, 15);
+    mainSetBits(BIT_1F8, 1);
+    mainSetBits(BIT_1F9, 1);
+    mainSetBits(BIT_Play_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_One, 1);
+    mainSetBits(BIT_Play_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Two, 1);
+    mainSetBits(BIT_Play_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Three, 1);
+    mainSetBits(BIT_Play_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Four, 1);
+    mainSetBits(BIT_Play_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Five, 1);
+    mainSetBits(BIT_Played_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_One, 1);
+    mainSetBits(BIT_Played_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Two, 1);
+    mainSetBits(BIT_Played_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Three, 1);
+    mainSetBits(BIT_Played_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Four, 1);
+    mainSetBits(BIT_Played_Seq_01CF_CF_Baby_Cloudrunner_Lands_On_Perch_Five, 1);
+    mainSetBits(BIT_CRF_Dock_Left_BigDoorSwitch_State, 1);
+    mainSetBits(BIT_305, 1);
+    mainSetBits(BIT_CRF_Play_Seq_005D_Treasure_Room_Door_Opening_Sequences, 1);
+    mainSetBits(BIT_30E, 1);
+    mainSetBits(BIT_323, 1);
+    mainSetBits(BIT_324, 1);
+    mainSetBits(BIT_330, 1);
+    mainSetBits(BIT_CF_Free_Cloudrunner_From_Chest, 1);
+    mainSetBits(BIT_33A, 1);
+    mainSetBits(BIT_CRF_First_Four_Baby_CloudRunners_Rescued, 1);
+    mainSetBits(BIT_350, 1);
+    mainSetBits(BIT_35B, 1);
+    mainSetBits(BIT_361, 1);
+    mainSetBits(BIT_362, 1);
+    mainSetBits(BIT_CRF_Galleon_Rescued_Baby_CloudRunner, 1);
+    mainSetBits(BIT_Kyte_Flight_Curve, 23);
+    mainSetBits(BIT_475, 1);
+    mainSetBits(BIT_476, 1);
+    mainSetBits(BIT_477_CRF_Treasure_Room_Doors_Opened, 1);
+    mainSetBits(BIT_CRF_Throne_Room_Quest_Complete, 1);
+    mainSetBits(BIT_4BF, 1);
+    mainSetBits(BIT_Played_Seq_02B2_CF_Courtyard_Water_Drains, 1);
+    mainSetBits(BIT_Play_Seq_02C6_CF_Sharpclaw_Only_Four_Chests_Left, 1);
+    mainSetBits(BIT_Play_Seq_042D_CF_Baby_CloudRunner_Trapped_In_Chest, 1);
+    mainSetBits(BIT_8CC, 1);
+    mainSetBits(BIT_8CD, 1);
+    mainSetBits(BIT_8CE, 1);
+    mainSetBits(BIT_8D3, 1);
+    mainSetBits(BIT_CRF_Galleon_Force_Low_Detail, 1);
+    mainSetBits(BIT_CRF_Num_Rescued_Baby_CloudRunners, 4); // hmm not 5?
+
+    chselect_set_map_state(MAP_INSIDE_GALLEON, 0, G1);
+    chselect_set_map_state(MAP_CLOUDRUNNER_FORTRESS, 1, G30);
+    chselect_set_map_state(MAP_CLOUDRUNNER_TREASURE, 1, G6);
+    chselect_set_map_state(MAP_CLOUDRUNNER_RACETRACK, 0, G3);
+
+    chselect_move_setup(0x2A4F, MAP_CLOUDRUNNER_DUNGEON, -11625.26f, 1877.79f, 19031.80f); // CFGuardian
+
+    /* before race */
+    chselect_set_location(PLAYER_KRYSTAL, -12478.511f, 1313.0f, 19042.547f, M_90_DEGREES, -2);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 506;
+    light.skylights[1] = 22;
+    light.skylights[3] = 511;
+    light.trklights[0] = 54;
+    // bug: should be inside light
+    light.cam = 1;
+    chselect_set_light(PLAYER_KRYSTAL, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 400;
+    env.unk6 = 86;
+    env.unk8 = 9;
+    env.unkA = 70;
+    env.unkC = 67;
+    env.unkE = 92;
+    env.unk10 = -10703; env.unk14 = 1716; env.unk18 = 18241;
+    env.unk1C = -10884; env.unk20 = 1876; env.unk24 = 18921;
+    env.unk28 = -10448; env.unk2C = 1501; env.unk30 = 18255;
+    chselect_set_env(PLAYER_KRYSTAL, &env);
+
+    chselect_set_music(PLAYER_KRYSTAL, 296, -1, 16, -1);
+}
+
+static void ch_golden_plains_1(void) {
+    /* cloudrunner race */
+    mainSetBits(BIT_SpellStone_CRF, 1);
+    mainSetBits(BIT_498, 1);
+    mainSetBits(BIT_Play_Seq_02A9_CF_Race_End, 1);
+    mainSetBits(BIT_Play_Seq_0205_CF_Race_Scales_Intro, 1);
+    mainSetBits(BIT_Played_Seq_0205_CF_Race_Scales_Intro, 1);
+    mainSetBits(BIT_Played_Seq_02A9_CF_Race_End, 1);
+    mainSetBits(BIT_4A4, 1);
+    mainSetBits(BIT_Played_Seq_02AB_CF_SpellStone_Activation, 1);
+    mainSetBits(BIT_Play_Seq_02AB_CF_SpellStone_Activation, 1);
+    mainSetBits(BIT_SpellStone_CRF_Activated, 1);
+
+    chselect_move_setup(0x30C20, MAP_CLOUDRUNNER_RACETRACK, -13341.44043f, 1261.983276f, 18904.962891f); // CFGuardian
+
+    /* walk back to swapstone circle */
+    mainSetBits(BIT_38B, 0);
+    mainSetBits(BIT_Kyte_Flight_Curve, 94);
+    mainSetBits(BIT_CRF_Player_Leaving_Via_Entrance_Bridge, 1);
+    mainSetBits(BIT_Play_Seq_0210_CF_Exit_Cutscene, 1);
+    mainSetBits(BIT_4DE, 1);
+    mainSetBits(BIT_CF_Entrance_Trigger_Passed, 0);
+    mainSetBits(BIT_63E, 7); // tumbleweeds?
+
+    chselect_set_map_state(MAP_SWAPSTONE_CIRCLE, 5, G4);
+    chselect_set_map_state(MAP_MOON_MOUNTAIN_PASS, 1, G_None);
+    chselect_set_map_state(MAP_CLOUDRUNNER_FORTRESS, 1, G30);
+    chselect_set_map_state(MAP_CLOUDRUNNER_TREASURE, 1, G_None);
+    chselect_set_map_state(MAP_CLOUDRUNNER_DUNGEON, 1, G0);
+    chselect_set_map_state(MAP_CLOUDRUNNER_RACETRACK, 0, G_None);
+    chselect_set_map_state(MAP_DISCOVERY_FALLS, 1, G_None);
+
+    /* golden plains entrance */
+    chselect_set_map_state(MAP_GOLDEN_PLAINS, 1, G1);
+
+    mainSetBits(BIT_GP_Sharpclaw_Jetbike_Cutscene2, 1); // !!!
+
+    chselect_set_location(PLAYER_KRYSTAL, -941.265564f, 121.0f, 15331.285156f, 0, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 485;
+    light.skylights[1] = 486;
+    light.skylights[3] = 570;
+    light.trklights[0] = 484;
+    light.newlfx = 90;
+    light.cam = 1;
+    chselect_set_light(PLAYER_KRYSTAL, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 341;
+    env.unk6 = 485;
+    env.unk8 = 484;
+    env.unkA = 451;
+    env.unkC = 67;
+    env.unkE = 92;
+    env.unk10 = -1073; env.unk14 = 394; env.unk18 = 17380;
+    env.unk1C = -10884; env.unk20 = 1876; env.unk24 = 18921;
+    env.unk28 = -10448; env.unk2C = 1501; env.unk30 = 18255;
+    chselect_set_env(PLAYER_KRYSTAL, &env);
+
+    chselect_set_music(PLAYER_KRYSTAL, 218, -1, 238, -1);
+}
+
+static void ch_desert_force_point_1(void) {
+    /* golden plains */
+    chselect_move_setup(0x33871, MAP_GOLDEN_PLAINS, -935.105469f, 113.410797f, 14225.819336f); // DIMPushBlock
+
+    mainSetBits(BIT_Kyte_Flight_Curve, 93);
+    mainSetBits(BIT_Spell_Portal, 1);
+    mainSetBits(BIT_63E, 0); // tumbleweed meter?
+    mainSetBits(BIT_795, 1);
+    mainSetBits(BIT_796, 1);
+    mainSetBits(BIT_7A6, 1);
+    mainSetBits(BIT_7D6, 1);
+    mainSetBits(BIT_8F9, 1);
+    mainSetBits(DINOMOD_BIT_976_DFPT_Lift_Lowered, 1);
+
+    chselect_set_map_state(MAP_GOLDEN_PLAINS, 1, G4);
+    chselect_set_map_state(MAP_DESERT_FORCE_POINT_TEMPLE_TOP, 1, G0 | G5 | G10);
+    chselect_set_map_state(MAP_SWAPSTONE_CIRCLE, 5, G_None);
+
+    /* dfp top */
+    chselect_set_location(PLAYER_KRYSTAL, 1388.446f, -168.0f, 10541.898f, M_180_DEGREES, 0);
+
+    PlayerLightActions light = DEFAULT_LACTIONS;
+    light.skylights[0] = 485;
+    light.skylights[1] = 486;
+    light.skylights[2] = 358;
+    light.skylights[3] = 570;
+    light.trklights[0] = 484;
+    // no inside light?
+    light.cam = 1;
+    chselect_set_light(PLAYER_KRYSTAL, &light);
+
+    PlayerEnvActions env = DEFAULT_ENVACTIONS;
+    env.unk4 = 341;
+    env.unk6 = 485;
+    env.unk8 = 415;
+    env.unkA = 451;
+    env.unkC = 67;
+    env.unkE = 92;
+    env.unk10 = -1073; env.unk14 = 394; env.unk18 = 17380;
+    env.unk1C = -10884; env.unk20 = 1876; env.unk24 = 18921;
+    env.unk28 = -10448; env.unk2C = 1501; env.unk30 = 18255;
+    chselect_set_env(PLAYER_KRYSTAL, &env);
+
+    chselect_set_music(PLAYER_KRYSTAL, 218, -1, 237, -1);
+}
+
+// WC1 start
+static void ch_swapstone_hollow_4(void) {
+    /* desert force point */
+    mainSetBits(BIT_2B2, 1);
+    mainSetBits(BIT_SpellStone_CRF, 0);
+    mainSetBits(BIT_DFPT_Load_SpellStone_Holder_1_Interior, 1);
+    mainSetBits(BIT_DFP_Place_Spellstone_One, 1);
+    mainSetBits(BIT_DFPT_Load_Block_Slide_Puzzle_1, 1);
+    mainSetBits(DFPT_Load_Block_Slide_Puzzle_2, 1);
+    mainSetBits(DINOMOD_BIT_976_DFPT_Lift_Lowered, 0);
+
+    chselect_set_map_state(MAP_INSIDE_GALLEON, 0, G_None); // interesting
+    chselect_set_map_state(MAP_CLOUDRUNNER_FORTRESS, 1, G_None);
+    chselect_set_map_state(MAP_CLOUDRUNNER_DUNGEON, 1, G_None);
+
+    /* walk back to swapstone circle */
+    mainSetBits(BIT_Kyte_Flight_Curve, 55);
+    // some of these might have been during dfp
+    mainSetBits(BIT_5E3, 1);
+    mainSetBits(BIT_5E6, 17);
+    mainSetBits(BIT_5E8, 1);
+    mainSetBits(BIT_5EA, 1);
+    mainSetBits(BIT_5EB, 1);
+    mainSetBits(BIT_5ED, 1);
+    mainSetBits(BIT_5F6, 1);
+    mainSetBits(BIT_652, 1);
+    mainSetBits(BIT_Discovered_Duster_1, 1); // uhhhh i didnt do this tho
+    mainSetBits(BIT_766, 1);
+    mainSetBits(BIT_GP_ShrinePillar_Raised_1, 1);
+    mainSetBits(BIT_8EE, 1);
+    
+    chselect_set_map_state(MAP_SWAPSTONE_CIRCLE, 5, G0);
+    chselect_set_map_state(MAP_GOLDEN_PLAINS, 1, G_None);
+    chselect_set_map_state(MAP_DESERT_FORCE_POINT_TEMPLE_TOP, 1, G_None);
+
+    {
+        // krystal's last state
+        chselect_set_location(PLAYER_KRYSTAL, -1119.43f, 302.10f, 17307.94f, 0x1400, 0);
+
+        PlayerLightActions light = DEFAULT_LACTIONS;
+        light.skylights[0] = 485;
+        light.skylights[1] = 486;
+        light.skylights[2] = 358;
+        light.skylights[3] = 570;
+        light.trklights[0] = 484;
+        light.trklights[1] = 634;
+        //light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE; // !! bug! should not be set here
+        light.cam = 1;
+        chselect_set_light(PLAYER_KRYSTAL, &light);
+
+        PlayerEnvActions env = DEFAULT_ENVACTIONS;
+        env.unk4 = 79;
+        env.unk6 = 80;
+        env.unk8 = 9;
+        env.unkA = 451;
+        env.unkC = 67;
+        env.unkE = 92;
+        env.unk10 = -1073; env.unk14 = 394; env.unk18 = 17380;
+        env.unk1C = -10884; env.unk20 = 1876; env.unk24 = 18921;
+        env.unk28 = -10448; env.unk2C = 1501; env.unk30 = 18255;
+        chselect_set_env(PLAYER_KRYSTAL, &env);
+
+        chselect_set_music(PLAYER_KRYSTAL, 185, -1, 5, -1);
+    }
+
+    /* swap */
+    chselect_set_player(PLAYER_SABRE);
+
+    mainSetBits(BIT_Play_Seq_0107_Rocky_Intro_Unused, 1);
+    mainSetBits(BIT_Tricky_Talk_Sequence, 201);
+    mainSetBits(BIT_Play_Seq_035F_Rocky_Intro, 0);
+
+    chselect_set_map_state(MAP_SWAPSTONE_HOLLOW, 1, G0);
+
+    {
+        chselect_set_location(PLAYER_SABRE, -6571.54, -632.0f, -1607.57f, 0, 0);
+
+        PlayerLightActions light = DEFAULT_LACTIONS;
+        light.skylights[0] = 232;
+        light.skylights[1] = 401;
+        light.skylights[2] = 402;
+        light.skylights[3] = 374;
+        light.trklights[0] = 629;
+        light.trklights[1] = 443;
+        light.cam = 1;
+        chselect_set_light(PLAYER_SABRE, &light);
+
+        PlayerEnvActions env = DEFAULT_ENVACTIONS;
+        env.unk4 = 97;
+        env.unk6 = 95;
+        env.unk8 = 96;
+        env.unkA = 424;
+        env.unkC = 300;
+        env.unk10 = -6571; env.unk14 = -631; env.unk18 = -1526;
+        env.unk1C = -7345; env.unk20 = -994; env.unk24 = 7317;
+        chselect_set_env(PLAYER_SABRE, &env);
+
+        chselect_set_music(PLAYER_SABRE, 218, -1, 1, -1);
+    }
 }
 
 static Chapter chapters[] = {
@@ -1037,29 +1789,33 @@ static Chapter chapters[] = {
     { "DarkIce Mines 1", ch_darkice_1 },
     { "DarkIce Mines 2", ch_darkice_2 },
     { "Boss Galadon", ch_galadon },
-    { "SwapStone Hollow 2 (River)", ch_stub },
-    { "Diamond Bay 1", ch_stub },
-    { "Volcano Force Point 1", ch_stub },
-    { "Test Of Strength", ch_stub },
-    { "Warlock Mountain Spirit 2", ch_stub },
+    { "SwapStone Hollow 3 (River)", ch_swapstone_hollow_river },
+    { "Diamond Bay 1", ch_diamond_bay_1 },
+    { "Volcano Force Point 1", ch_volcano_force_point_1 },
+    { "Test Of Strength", ch_db_shrine },
+    { "Warlock Mountain Spirit 2", ch_warlock_mountain_spirit_2 },
 
     // Krystal Act 3 (SpellStone 2)
     { "A Birdy Reunion", NULL },
-    { "SwapStone Circle 3", ch_stub },
+    { "SwapStone Circle 3", ch_swapstone_circle_3 },
     { "CloudRunner Fortress", ch_crf_start },
     { "CloudRunner Dungeon", ch_crf_dungeon_start },
+    { "CloudRunner Race", ch_crf_race },
+    { "Golden Plains 1", ch_golden_plains_1 },
+    { "Desert Force Point 1", ch_desert_force_point_1 },
 
     // Sabre Act 3 (SpellStone 3)
     { "RedEye Rampage", NULL },
+    { "SwapStone Hollow 4", ch_swapstone_hollow_4 },
     
     // Krystal Act 4 (Spirit 3)
-    { "To The Moon", NULL },
+    //{ "To The Moon", NULL },
 
     // Sabre Act 4 (Spirit 4)
-    { "Sun and Moon", NULL },
+    //{ "Sun and Moon", NULL },
     
     // Krystal Act 5 (SpellStone 4, Spirit 5)
-    { "Chief's Trials", NULL },
+    //{ "Chief's Trials", NULL },
 
 };
 
