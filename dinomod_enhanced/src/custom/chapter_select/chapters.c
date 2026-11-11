@@ -6,8 +6,13 @@
 #include "macros.h"
 
 #include "custom_gamebits.h"
-
 #include "chapter_select.h"
+
+// TODO: Most newlfx actions set here are probably wrong. The game doesn't consider which object the
+//       action is attached to and always restores it to being on the player, which is often incorrect.
+//       Newlfx should probably be patched to not persist non-player actions and then each chapter will
+//       need to be updated.
+#define CHSELECT_NEWLFX 0
 
 static void ch_stub(void) { }
 
@@ -19,7 +24,9 @@ static void ch_wl_1(void) {
     PlayerLightActions light = DEFAULT_LACTIONS;
     light.skylights[0] = 120;
     light.skylights[1] = 119;
+#if CHSELECT_NEWLFX
     light.newlfx = 93;
+#endif
     chselect_set_light(PLAYER_KRYSTAL, &light);
     PlayerEnvActions env = DEFAULT_ENVACTIONS;
     env.unk4 = 165;
@@ -83,7 +90,9 @@ static void ch_ice_mountain(void) {
         light.skylights[0] = 485;
         light.skylights[1] = 486;
         light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
         light.newlfx = 126;
+#endif
         chselect_set_light(PLAYER_KRYSTAL, &light);
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
         env.unk4 = 79; // depends on time of day in SC
@@ -109,7 +118,9 @@ static void ch_ice_mountain(void) {
         light.skylights[1] = 348;
         light.skylights[2] = 380;
         light.skylights[3] = 356;
+#if CHSELECT_NEWLFX
         light.newlfx = 6;
+#endif
         chselect_set_light(PLAYER_SABRE, &light);
         
         PlayerEnvActions env = DEFAULT_ENVACTIONS;
@@ -159,7 +170,9 @@ static void ch_snowhorn_wastes_1(void) {
     light.skylights[2] = 394;
     light.skylights[3] = 356;
     light.trklights[0] = 392;
+#if CHSELECT_NEWLFX
     light.newlfx = 145;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -227,7 +240,9 @@ static void ch_swapstone_hollow_1(void) {
     light.skylights[2] = 394;
     light.skylights[3] = 356;
     light.trklights[0] = 392;
+#if CHSELECT_NEWLFX
     light.newlfx = 145;
+#endif
     light.cam = 61;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -286,7 +301,9 @@ static void ch_swapstone_circle_1(void) {
         light.skylights[2] = 402;
         light.skylights[3] = 403;
         light.trklights[0] = 392;
+#if CHSELECT_NEWLFX
         light.newlfx = 2;
+#endif
         light.cam = 1;
         chselect_set_light(PLAYER_SABRE, &light);
 
@@ -321,7 +338,9 @@ static void ch_swapstone_circle_1(void) {
         light.skylights[0] = 485;
         light.skylights[1] = 486;
         light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
         light.newlfx = 126;
+#endif
         light.cam = 1;
         chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -352,7 +371,9 @@ static void ch_cape_claw_1(void) {
     light.skylights[0] = 485;
     light.skylights[1] = 486;
     light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
     light.newlfx = 480;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -517,7 +538,9 @@ static void ch_discovery_falls(void) {
     light.skylights[0] = 485;
     light.skylights[1] = 36;
     light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
     light.newlfx = 90;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -603,7 +626,9 @@ static void ch_df_shrine(void) {
     // light.skylights[0] = 485;
     // light.skylights[1] = 35;
     // light.trklights[0] = 495;
+//#if CHSELECT_NEWLFX
     // light.newlfx = 493;
+//#endif
     // light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
     // light.cam = 1;
     // chselect_set_light(PLAYER_KRYSTAL, &light);
@@ -627,7 +652,9 @@ static void ch_df_shrine(void) {
     light.skylights[0] = 19;
     light.skylights[1] = 18;
     light.trklights[0] = 495;
+#if CHSELECT_NEWLFX
     light.newlfx = 493;
+#endif
     light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
     light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
@@ -665,7 +692,9 @@ static void ch_warlock_mountain_spirit_1(void) {
     light.skylights[0] = 108;
     light.skylights[1] = 119;
     light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
     light.newlfx = 90;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -700,7 +729,9 @@ static void ch_swapstone_hollow_2(void) {
         light.skylights[0] = 485;
         light.skylights[1] = 486;
         light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
         light.newlfx = 126;
+#endif
         light.cam = 1;
         chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -734,7 +765,9 @@ static void ch_swapstone_hollow_2(void) {
         light.skylights[1] = 401;
         light.skylights[2] = 402;
         light.skylights[3] = 403;
+#if CHSELECT_NEWLFX
         light.newlfx = 1;
+#endif
         light.cam = 1;
         chselect_set_light(PLAYER_SABRE, &light);
 
@@ -777,7 +810,9 @@ static void ch_darkice_1(void) {
     light.skylights[2] = 394;
     light.skylights[3] = 403;
     light.trklights[0] = 392;
+#if CHSELECT_NEWLFX
     light.newlfx = 204;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -877,7 +912,9 @@ static void ch_darkice_2(void) {
     light.skylights[3] = 403;
     light.trklights[0] = 392;
     light.trklights[1] = 443;
+#if CHSELECT_NEWLFX
     light.newlfx = 2;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -1010,7 +1047,9 @@ static void ch_swapstone_hollow_river(void) {
     light.skylights[3] = 274;
     light.trklights[0] = 392;
     light.trklights[1] = 443;
+#if CHSELECT_NEWLFX
     light.newlfx = 203;
+#endif
     light.cam = 61;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -1047,7 +1086,9 @@ static void ch_diamond_bay_1(void) {
     light.skylights[3] = 403;
     light.trklights[0] = 392;
     light.trklights[1] = 443;
+#if CHSELECT_NEWLFX
     light.newlfx = 2;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -1180,7 +1221,9 @@ static void ch_db_shrine(void) {
     light.skylights[3] = 374;
     light.trklights[0] = 616;
     light.trklights[1] = 443;
+#if CHSELECT_NEWLFX
     light.newlfx = 413;
+#endif
     light.flags = PL_LIGHT_ACTION_FLAG_IS_INSIDE;
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
@@ -1232,7 +1275,9 @@ static void ch_warlock_mountain_spirit_2(void) {
     light.skylights[3] = 374;
     light.trklights[0] = 629;
     light.trklights[1] = 443;
+#if CHSELECT_NEWLFX
     light.newlfx = 1;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_SABRE, &light);
 
@@ -1307,7 +1352,9 @@ static void ch_swapstone_circle_3(void) {
         light.skylights[0] = 485;
         light.skylights[1] = 486;
         light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
         light.newlfx = 126;
+#endif
         light.cam = 1;
         chselect_set_light(PLAYER_KRYSTAL, &light);
 
@@ -1390,7 +1437,9 @@ static void ch_crf_dungeon_start(void) {
     light.skylights[0] = 506;
     light.skylights[1] = 22;
     light.trklights[0] = 494;
+#if CHSELECT_NEWLFX
     light.newlfx = 49;
+#endif
     // bug: should be inside light
     light.cam = 37;
     chselect_set_light(PLAYER_KRYSTAL, &light);
@@ -1594,7 +1643,9 @@ static void ch_golden_plains_1(void) {
     light.skylights[1] = 486;
     light.skylights[3] = 570;
     light.trklights[0] = 484;
+#if CHSELECT_NEWLFX
     light.newlfx = 90;
+#endif
     light.cam = 1;
     chselect_set_light(PLAYER_KRYSTAL, &light);
 

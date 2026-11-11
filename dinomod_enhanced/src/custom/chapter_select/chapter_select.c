@@ -186,6 +186,8 @@ RECOMP_CALLBACK(".", dinomod_dbgui_event) void chapter_select_dinomod_dbgui_call
             Chapter* chapters = chselect_get_chapters(&numChapters);
 
             if (dbgui_begin_child("scroll")) {
+                dbgui_text_wrapped("Warning: Selecting a chapter will overwrite your save file!");
+
                 for (s32 i = 0; i < numChapters; i++) {
                     dbgui_push_str_id(recomp_sprintf_helper("ch%d", i));
 
